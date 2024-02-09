@@ -46,8 +46,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">实验1、组合逻辑</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">教程：“2-4译码器”的三种写法</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">练习</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><em>1、2-4译码器的三种写法</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testbench"><em>2、Testbench验证</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fpga"><em>3、2-4译码器的FPGA实现验证</em></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">练习</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#parity-check-code"><em>1、奇偶校验码 (parity check code)设计</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#thermometer-code"><em>2、温度计码 (thermometer code)设计</em></a></li>
 </ul>
@@ -90,10 +95,72 @@
   <section id="id1">
 <h1>实验1、组合逻辑<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <section id="id2">
-<h2>教程：“2-4译码器”的三种写法<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-</section>
+<h2>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>Verilog HDL是非常自由的语法，条条大路通罗马。</p>
 <section id="id3">
-<h2>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<h3><em>1、2-4译码器的三种写法</em><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">decoder2_4</span><span class="w"> </span><span class="p">(</span>
+<span class="n">decode_in</span><span class="p">,</span>
+<span class="n">decode_out</span>
+<span class="p">);</span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">decode_in</span><span class="p">;</span>
+<span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">decode_out</span><span class="p">;</span>
+
+<span class="c1">//写出逻辑表达式，然后像卡诺图一样写出来</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">decode_out</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">decode_in</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="n">decode_in</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">decode_out</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">decode_in</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">decode_in</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">decode_out</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">decode_in</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="n">decode_in</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">decode_out</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">decode_in</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">decode_in</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">decoder2_4</span><span class="w"> </span><span class="p">(</span>
+<span class="n">decode_in</span><span class="p">,</span>
+<span class="n">decode_out</span>
+<span class="p">);</span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">decode_in</span><span class="p">;</span>
+<span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">decode_out</span><span class="p">;</span>
+
+<span class="c1">//用?:语句写</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">decode_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">decode_in</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">?</span><span class="w"> </span>
+<span class="w">    </span><span class="p">(</span><span class="n">decode_in</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">?</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b1000</span><span class="o">:</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0010</span><span class="p">)</span><span class="o">:</span>
+<span class="w">    </span><span class="p">(</span><span class="n">decode_in</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">?</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0100</span><span class="o">:</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0001</span><span class="p">);</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">decoder2_4</span><span class="w"> </span><span class="p">(</span>
+<span class="n">decode_in</span><span class="p">,</span>
+<span class="n">decode_out</span>
+<span class="p">);</span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">decode_in</span><span class="p">;</span>
+<span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">decode_out</span><span class="p">;</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="c1">//组合逻辑的always块写法，这样就可以用if-else或者case语句啦</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">decode_in</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b00</span><span class="p">)</span>
+<span class="w">        </span><span class="n">decode_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0001</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">decode_in</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b01</span><span class="p">)</span>
+<span class="w">        </span><span class="n">decode_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0010</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">decode_in</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b10</span><span class="p">)</span>
+<span class="w">        </span><span class="n">decode_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b0100</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">decode_in</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="mb">&#39;b11</span><span class="p">)</span>
+<span class="w">        </span><span class="n">decode_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="mb">&#39;b1000</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+</section>
+<section id="testbench">
+<h3><em>2、Testbench验证</em><a class="headerlink" href="#testbench" title="Link to this heading"></a></h3>
+</section>
+<section id="fpga">
+<h3><em>3、2-4译码器的FPGA实现验证</em><a class="headerlink" href="#fpga" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id4">
+<h2>练习<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
 <section id="parity-check-code">
 <h3><em>1、奇偶校验码 (parity check code)设计</em><a class="headerlink" href="#parity-check-code" title="Link to this heading"></a></h3>
 <p>奇偶校验码是最简单的查错编码 (error detection code)，其行为是输入m位码字，如果有奇数个1则编码器输出1；如果有偶数个1则编码输出为0。</p>

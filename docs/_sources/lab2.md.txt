@@ -1,8 +1,126 @@
 # 实验2、时序逻辑
 
-## 教程：触发器与锁存器
+## 教程
+
+### *1、触发器与锁存器*
+时序逻辑部分最重要的知识点就是flip-flop与latch的不同，为了强化这部分的理解，我们直接用实验看一下它们的不同点。请逐行研读一下下面的代码，并且基于“实验1”中的仿真与FPGA部署方法，运行下面的Testbench。
+
+请重点观察：
+- 给到D端口的数据什么时候会变？是哪些信号让他们发生了变化？
+- Q端的数据怎么样才能保持住（不受D端信号变化的影响）？
+- 注意“边缘触发”/“电平触发”/“同步重置”(RESET)/“异步重置”(RESET)的区别
+
+
+- 同步RESET的DFF：
+```Verilog
+module dff_sync_reset (
+data   , // Data Input
+clk    , // Clock Input
+reset  , // Reset input
+q        // Q output
+);
+
+input data, clk, reset ; //Input Ports
+
+output reg q;//Output Ports
+
+always @ ( posedge clk)
+if (~reset) begin
+  q <= 1'b0;
+end  else begin
+  q <= data;
+end
+
+endmodule
+```
+
+异步RESET的DFF：
+```Verilog
+module dff_async_reset (
+data   , // Data Input
+clk    , // Clock Input
+reset  , // Reset input
+q        // Q output
+);
+
+input data, clk, reset ; //Input Ports
+
+output reg q;//Output Ports
+
+always @ ( posedge clk or posedge reset)
+if (~reset) begin
+  q <= 1'b0;
+end  else begin
+  q <= data;
+end
+
+endmodule
+```
+
+-D(ata)型锁存器 (D-Latch)：
+```Verilog
+module dlatch_reset (
+data   , // Data Input
+en     , // LatchInput
+reset  , // Reset input
+q        // Q output
+);
+
+input data, en, reset ; //Input Ports
+
+output reg q; //Output Ports
+
+always @ ( en or reset or data)
+if (~reset) begin
+  q <= 1'b0;
+end else if (en) begin
+  q <= data;
+end
+
+endmodule
+```
+- 比较三者不同的统一Testbench：
+```Verilog
+
+```
+
+
+### *2、普通计数器*
+
+计数器是Verilog里最常见的时序逻辑，其代码（一种实现方式）如下：
+```Verilog
+module counter    (
+out     ,  // Output of the counter
+enable  ,  // enable for counter
+clk     ,  // clock Input
+reset      // reset Input
+);
+
+output reg [7:0] out;//Output Ports
+
+input enable, clk, reset;//Input Ports
+
+always @(posedge clk)
+if (reset) begin
+  out <= 8'b0 ;
+end else if (enable) begin
+  out <= out + 1;
+end
+
+endmodule 
+```
+
+Testbench:
+
+用iverilog或者Vivado仿真结果如下：
+
+FPGA实现：
+
 
 ## 练习
+
+>**[问题1]**
+>请简要回答上面三者：(a) 同步RESET的DFF、(b)异步RESET的DFF、(c)D-Latch在行为上的不同点。
 
 ### *1、上下计数器*
 
@@ -12,7 +130,7 @@ up_down=0: 向上数
 up_down=1: 向下数
 ```
 
->**[问题1]**
+>**[问题2]**
 >用Verilog HDL设计上下计数器，并写testbench验证。
 
 ### *2、格雷码计数器*
@@ -40,7 +158,7 @@ up_down=1: 向下数
 |      1001 |            1110 |
 |      1000 |            1111 |
 
->**[问题2]**
+>**[问题3]**
 >用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。
 
 - 提示：不要用查找表一一对应写！

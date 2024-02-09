@@ -10,13 +10,13 @@
 
 
 >**[问题1]**
->用Verilog HDL设计上下计数器，并写testbench验证。
+>写出上面，并写testbench验证。
 
 ### *2、一个变量不能在两个always块里赋值*
 
 
 >**[问题2]**
->用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。
+>如果想在。
 
 ### *3、“Verilog”是一门并行执行的语言？*
 
@@ -24,4 +24,7 @@
 >用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。
 
 ### *4、“下个周期取数”*
+
+## 总结
+Verilog里看起来很费解的上面这些概念，其实本质是在用DFF搭建电路，Verilog HDL如其名只是在描述DFF的行为。
 
