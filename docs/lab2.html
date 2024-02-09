@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>实验2、时序逻辑 &mdash; 数字系统设计与实践-实验  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="实验3、那些Verilog里令人费解的概念" href="lab3.html" />
+    <link rel="prev" title="实验1、组合逻辑" href="lab1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            数字系统设计与实践-实验
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验2、时序逻辑</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">教程：触发器与锁存器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">练习</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><em>1、上下计数器</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5"><em>2、格雷码计数器</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、那些Verilog里令人费解的概念</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">数字系统设计与实践-实验</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">实验2、时序逻辑</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lab2.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>实验2、时序逻辑<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2>教程：触发器与锁存器<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+</section>
+<section id="id3">
+<h2>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3><em>1、上下计数器</em><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>上下计数器是指计数器可以实现向上数（12345…）与向下数（54321…）的计算数，被计数信号从clk端输入。向下向下数的模式需要设置一个模式控制端口“up_down”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">up_down</span><span class="o">=</span><span class="mi">0</span><span class="p">:</span> <span class="n">向上数</span>
+<span class="n">up_down</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span> <span class="n">向下数</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>[问题1]</strong>
+用Verilog HDL设计上下计数器，并写testbench验证。</p>
+</div></blockquote>
+</section>
+<section id="id5">
+<h3><em>2、格雷码计数器</em><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>格雷码（Gray Code），又称为反射码、单增码、循环码等，是一种二进制编码方式，最早由美国计算机科学家达尔文·格雷（Darwin Gray）在1959年提出。格雷码的特点是在相邻的两个数值之间，只有一个二进制位不同，这种特性使得格雷码在硬件中进行数值切换时，可以最小化错误发生的概率，从而减少开关动作的次数，提高电子设备的可靠性和稳定性。</p>
+<p>格雷码基础公式：<a class="reference external" href="https://baike.baidu.com/item/%E6%A0%BC%E9%9B%B7%E7%A0%81/6510858">https://baike.baidu.com/item/格雷码/6510858</a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-right"><p>4位格雷码</p></th>
+<th class="head text-right"><p>4位自然二进制码</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>0000</p></td>
+<td class="text-right"><p>0000</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>0001</p></td>
+<td class="text-right"><p>0001</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>0011</p></td>
+<td class="text-right"><p>0010</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>0010</p></td>
+<td class="text-right"><p>0011</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>0110</p></td>
+<td class="text-right"><p>0100</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>0111</p></td>
+<td class="text-right"><p>0101</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>0101</p></td>
+<td class="text-right"><p>0110</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>0100</p></td>
+<td class="text-right"><p>0111</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>1100</p></td>
+<td class="text-right"><p>1000</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>1101</p></td>
+<td class="text-right"><p>1001</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>1111</p></td>
+<td class="text-right"><p>1010</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>1110</p></td>
+<td class="text-right"><p>1011</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>1010</p></td>
+<td class="text-right"><p>1100</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>1011</p></td>
+<td class="text-right"><p>1101</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>1001</p></td>
+<td class="text-right"><p>1110</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>1000</p></td>
+<td class="text-right"><p>1111</p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><p><strong>[问题2]</strong>
+用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>提示：不要用查找表一一对应写！</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lab1.html" class="btn btn-neutral float-left" title="实验1、组合逻辑" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab3.html" class="btn btn-neutral float-right" title="实验3、那些Verilog里令人费解的概念" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, 北京大学.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
