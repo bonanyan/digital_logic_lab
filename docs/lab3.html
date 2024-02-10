@@ -53,10 +53,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#id3"><em>1、阻塞与非阻塞赋值</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#always"><em>2、一个变量不能在两个always块里赋值</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id4"><em>3、“Verilog”是一门并行执行的语言？</em></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5"><em>4、“下个周期取数”</em></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">总结</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
@@ -96,35 +95,241 @@
 <h2>教程<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <p>这次实验没有教程，直接练习起来吧！</p>
 </section>
+<hr class="docutils" />
 <section id="id2">
 <h2>练习<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <section id="id3">
 <h3><em>1、阻塞与非阻塞赋值</em><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>程序1:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="n">en</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">100</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nb">$monitor</span><span class="p">(</span><span class="s">&quot;a=%d, b=%d, i=%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">8</span><span class="mi">&#39;d16</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="c1">//与程序1唯一的不同：换成了阻塞赋值</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span><span class="w"> </span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>程序2:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="n">en</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">100</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nb">$monitor</span><span class="p">(</span><span class="s">&quot;a=%d, b=%d, i=%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">8</span><span class="mi">&#39;d16</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">i</span><span class="o">&lt;=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">a</span><span class="o">&lt;=</span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="o">&lt;=</span><span class="n">a</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
 <blockquote>
 <div><p><strong>[问题1]</strong>
-写出上面，并写testbench验证。</p>
+写出两个段程序的运行结果，运行Verilog仿真验证，并加以解释为什么会这样。</p>
 </div></blockquote>
 </section>
 <section id="always">
 <h3><em>2、一个变量不能在两个always块里赋值</em><a class="headerlink" href="#always" title="Link to this heading"></a></h3>
+<p>程序3:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">counter</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">rst</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="w"> </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="w"> </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">100</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">$monit</span><span class="p">(</span><span class="n">counter</span><span class="p">);</span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
 <blockquote>
 <div><p><strong>[问题2]</strong>
-如果想在。</p>
+2.1 程序3运行起来会出什么错？请实验验证，解释为什么会这样。
+2.2 要想实现程序3的功能，请把程序改对。</p>
 </div></blockquote>
 </section>
 <section id="id4">
 <h3><em>3、“Verilog”是一门并行执行的语言？</em><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>程序4:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="n">en</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">100</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nb">$monitor</span><span class="p">(</span><span class="s">&quot;a=%d, b=%d, i=%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">8</span><span class="mi">&#39;d16</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>程序5:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="n">en</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">100</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nb">$monitor</span><span class="p">(</span><span class="s">&quot;a=%d, b=%d, i=%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">8</span><span class="mi">&#39;d16</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>程序6</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">counter</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">rst</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">led</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">led</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">2</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="w"> </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="w"> </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">100</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">$monit</span><span class="p">(</span><span class="n">counter</span><span class="p">);</span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">led</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">assign</span><span class="w"> </span><span class="n">led</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">counter</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
 <blockquote>
 <div><p><strong>[问题3]</strong>
-用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。</p>
+对比程序4与程序5，实验运行一下展示区别,并解释为什么会这样。
+程序6中，请手画波形图，注意led信号是什么时候发生变化。</p>
 </div></blockquote>
+<p>提示：</p>
+<ol class="arabic simple">
+<li><p>“begin…end”里的是按顺序执行，除非是fork语句</p></li>
+<li><p>不同的always块、assign语句之间是并行运行，确切地说不是并行执行，而它们只是电路之前的连接。</p></li>
+</ol>
+</section>
 </section>
 <section id="id5">
-<h3><em>4、“下个周期取数”</em><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
-</section>
-</section>
-<section id="id6">
-<h2>总结<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<h2>总结<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
 <p>Verilog里看起来很费解的上面这些概念，其实本质是在用DFF搭建电路，Verilog HDL如其名只是在描述DFF的行为。</p>
 </section>
 </section>

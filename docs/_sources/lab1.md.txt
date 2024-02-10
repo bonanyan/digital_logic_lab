@@ -2,7 +2,7 @@
 
 ## 教程
 
-Verilog HDL是非常自由的语法，条条大路通罗马。
+Verilog HDL拥有非常自由的语法，条条大路通罗马。
 
 ### *1、2-4译码器的三种写法*
 ```Verilog
@@ -95,4 +95,4 @@ endmodule
 >**[问题2]**
 >用Verilog HDL设计一个输入是1023位的温度计解码器，，并写testbench验证。
 
-- 提示：Verilog HDL支持for loop。
+- 提示：Verilog HDL支持for loop, [Verilog-2005 standard manual](http://staff.ustc.edu.cn/~songch/download/IEEE.1364-2005.pdf)。
