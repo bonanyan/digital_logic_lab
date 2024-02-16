@@ -6,8 +6,8 @@
 .. image:: _static/images/logo.jpg
    :width: 600
    :align: center
-.. note::
-   Figure Above: A digital computer trainer to teach business people about how computers functioned, design by Claude E. Shannon.
+
+Figure Above: A digital computer trainer to teach business people about how computers functioned, design by Claude E. Shannon.
 
 .. _a link: https://domain.invalid/
 
@@ -35,7 +35,11 @@
 
 - 每一个实验，先跟着每一个实验教程做；然后回答问题，最后提交实验报告
 - *实验报告只写问题部分即可 !!*
-- 实验报告模板：[下载](link)
+- 实验报告模板：template_
+
+.. _template:
+   _static/assets/report_template.docx
+
 
 
 

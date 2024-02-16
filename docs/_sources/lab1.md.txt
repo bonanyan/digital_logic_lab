@@ -77,6 +77,12 @@ gtkwave wave.vcd
 由于我们的testbench.v里写了$monitor(每当里面涉及的variable)
 
 ### *3、2-4译码器的FPGA实现验证*
+请根据以下教程，将上述testbench和三种decoder的设计置于FPGA上实验，输入用按键。
+
+参考：
+- [vivado下LED流水灯实验及仿真](_static/assets/01.vivado下LED流水灯实验及仿真.pdf)
+- [vivado下按键实验](_static/assets/02.vivado下按键实验.pdf)
+- [vivado下PLL实验](_static/assets/03.vivado下PLL实验.pdf)
 
 ## 练习
 
