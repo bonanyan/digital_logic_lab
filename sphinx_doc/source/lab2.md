@@ -11,6 +11,7 @@
 - 注意“边缘触发”/“电平触发”/“同步重置”(RESET)/“异步重置”(RESET)的区别
 
 现在有3种时序逻辑器件：a)同步RESET的DFF，b)异步RESET的DFF,和c)D-Latch，你可以预测出来三个Q端输出在下面输入的行为么？
+
 ![_static/assets/lab2_q.png](_static/assets/lab2_q.png)
 
 先自己试着预测画一个波形，下面我们来动手实验验证一下你的预测对不对吧！
@@ -237,8 +238,9 @@ gtkwave wave.vcd
 ---
 ## 练习
 
->**[问题1]**
->请简要回答上面三者：(a) 同步RESET的DFF、(b)异步RESET的DFF、(c)D-Latch在行为上的不同点。
+```{note}
+**[问题1]** 请简要回答上面三者：(a) 同步RESET的DFF、(b)异步RESET的DFF、(c)D-Latch在行为上的不同点。
+```
 
 ### *1、上下计数器*
 
@@ -247,9 +249,9 @@ gtkwave wave.vcd
 up_down=0: 向上数
 up_down=1: 向下数
 ```
-
->**[问题2]**
->用Verilog HDL设计上下计数器，并写testbench验证。
+```{note}
+**[问题2]** 用Verilog HDL设计上下计数器，并写testbench验证。
+```
 
 ### *2、格雷码计数器*
 
@@ -276,7 +278,8 @@ up_down=1: 向下数
 |      1001 |            1110 |
 |      1000 |            1111 |
 
->**[问题3]**
->用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。
+```{note}
+**[问题3]** 用Verilog HDL设计一个16bit格雷码计数器，并写testbench验证。
+```
 
 - 提示：不要用查找表一一对应写！

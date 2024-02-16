@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>实验6、初识逻辑综合 &mdash; 数字系统设计与实践-实验  documentation</title>
+  <title>7. 实验6、初识逻辑综合 &mdash; 数字系统设计与实践-实验  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="实验7、Macro应用-存储器" href="lab7.html" />
-    <link rel="prev" title="实验5、传输接口UART" href="lab5.html" /> 
+    <link rel="next" title="8. 实验7、Macro应用-存储器" href="lab7.html" />
+    <link rel="prev" title="6. 实验5、传输接口UART" href="lab5.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,19 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab2.html">实验2、时序逻辑</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、那些Verilog里令人费解的概念</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">实验6、初识逻辑综合</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">教程</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">练习</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. 实验0、实验准备</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1.html">2. 实验1、组合逻辑</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2.html">3. 实验2、时序逻辑</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3.html">4. 实验3、那些Verilog里令人费解的概念</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab4.html">5. 实验4、有限状态机</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab5.html">6. 实验5、传输接口UART</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">7. 实验6、初识逻辑综合</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">7.1. 教程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">7.2. 练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab7.html">8. 实验7、Macro应用-存储器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab8.html">9. 实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
 </ul>
 
         </div>
@@ -73,7 +73,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">实验6、初识逻辑综合</li>
+      <li class="breadcrumb-item active"><span class="section-number">7. </span>实验6、初识逻辑综合</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/lab6.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,13 +84,13 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1>实验6、初识逻辑综合<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1><span class="section-number">7. </span>实验6、初识逻辑综合<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <section id="id2">
-<h2>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2><span class="section-number">7.1. </span>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>之前的实现多为在FPGA上的实现，现在我们进入ASIC部分。本实验中，我们将通过scp/ssh访问远程的服务器做一下逻辑综合</p>
 </section>
 <section id="id3">
-<h2>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<h2><span class="section-number">7.2. </span>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 </section>
 </section>
 
@@ -98,8 +98,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="lab5.html" class="btn btn-neutral float-left" title="实验5、传输接口UART" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lab7.html" class="btn btn-neutral float-right" title="实验7、Macro应用-存储器" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lab5.html" class="btn btn-neutral float-left" title="6. 实验5、传输接口UART" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab7.html" class="btn btn-neutral float-right" title="8. 实验7、Macro应用-存储器" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

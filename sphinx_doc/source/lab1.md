@@ -62,6 +62,20 @@ endmodule
 
 ### *2、Testbench验证*
 
+用iverilog快速验证一下：
+```bash
+cd [到当前存放dff.v和dff_tb.v的文件夹]
+iverilog -o wave dff_tb.v
+vvp -n wave
+```
+如果到此运行顺利的话，当前文件夹会生成一个新的wave.vcd（正如dff_tb.v里面写的$dumpfile("wave.vcd")所写)。然后用gtkwave打开这个波形：
+```bash
+gtkwave wave.vcd
+```
+就可以得到。你之前预测的结果是正确的么？
+
+由于我们的testbench.v里写了$monitor(每当里面涉及的variable)
+
 ### *3、2-4译码器的FPGA实现验证*
 
 ## 练习
@@ -70,8 +84,10 @@ endmodule
 
 奇偶校验码是最简单的查错编码 (error detection code)，其行为是输入m位码字，如果有奇数个1则编码器输出1；如果有偶数个1则编码输出为0。
 
->**[问题1]**
->用Verilog HDL设计一个输入有16位的奇偶校验码，并写testbench验证。
+```{note}
+**[问题1]** 用Verilog HDL设计一个输入有16位的奇偶校验码，并写testbench验证。
+```
+
 
 - 提示：这是对于输入位的什么按位逻辑操作？一种逻辑操作即可搞定。
 
@@ -92,7 +108,7 @@ endmodule
 
 它就是长得像温度计。
 
->**[问题2]**
->用Verilog HDL设计一个输入是1023位的温度计解码器，，并写testbench验证。
-
+```{note}
+**[问题2]** 用Verilog HDL设计一个输入是1023位的温度计解码器，并写testbench验证。
+```
 - 提示：Verilog HDL支持for loop, [Verilog-2005 standard manual](http://staff.ustc.edu.cn/~songch/download/IEEE.1364-2005.pdf)。

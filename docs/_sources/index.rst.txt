@@ -13,6 +13,7 @@
 
 .. toctree::
    :maxdepth: 1
+   :numbered:
    :caption: 目录:
 
    install
