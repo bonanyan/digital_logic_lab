@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3. 实验2、时序逻辑 &mdash; 数字系统设计与实践-实验  documentation</title>
+  <title>实验2、时序逻辑 &mdash; 数字系统设计与实践-实验  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="4. 实验3、Verilog里费解的概念" href="lab3.html" />
-    <link rel="prev" title="2. 实验1、组合逻辑" href="lab1.html" /> 
+    <link rel="next" title="实验3、Verilog里费解的概念" href="lab3.html" />
+    <link rel="prev" title="实验1、组合逻辑" href="lab1.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,36 +44,36 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="install.html">1. 实验0、实验准备</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab1.html">2. 实验1、组合逻辑</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. 实验2、时序逻辑</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 教程</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">3.1.1. <em>1、触发器与锁存器</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#a-resetdff">3.1.1.1. a) 同步RESET的DFF：</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#b-resetdff">3.1.1.2. b) 异步RESET的DFF：</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#c-d-ata-d-latch">3.1.1.3. c) D(ata)型锁存器 (D-Latch)：</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#testbench">3.1.1.4. 再写比较三者不同的统一Testbench：</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验2、时序逻辑</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><em>1、触发器与锁存器</em></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-resetdff">a) 同步RESET的DFF：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-resetdff">b) 异步RESET的DFF：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-d-ata-d-latch">c) D(ata)型锁存器 (D-Latch)：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testbench">再写比较三者不同的统一Testbench：</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">3.1.2. <em>2、普通计数器</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id5">3.1.2.1. 先写Testbench:</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">3.2. 练习</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id7">3.2.1. <em>1、上下计数器</em></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">3.2.2. <em>2、格雷码计数器</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><em>2、普通计数器</em></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">先写Testbench:</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lab3.html">4. 实验3、Verilog里费解的概念</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab4.html">5. 实验4、有限状态机</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab5.html">6. 实验5、传输接口UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab6.html">7. 实验6、初识逻辑综合</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab7.html">8. 实验7、Macro应用-存储器</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab8.html">9. 实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">练习</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7"><em>1、上下计数器</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8"><em>2、格雷码计数器</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、Verilog里费解的概念</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
 </ul>
 
         </div>
@@ -90,7 +90,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">3. </span>实验2、时序逻辑</li>
+      <li class="breadcrumb-item active">实验2、时序逻辑</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/lab2.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,11 +101,11 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">3. </span>实验2、时序逻辑<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1>实验2、时序逻辑<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <section id="id2">
-<h2><span class="section-number">3.1. </span>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <section id="id3">
-<h3><span class="section-number">3.1.1. </span><em>1、触发器与锁存器</em><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<h3><em>1、触发器与锁存器</em><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>时序逻辑部分最重要的知识点就是flip-flop与latch的不同，为了强化这部分的理解，我们直接用实验看一下它们的不同点。请逐行研读一下下面的代码，并且基于“实验1”中的仿真与FPGA部署方法，运行下面的Testbench。</p>
 <p>请重点观察：</p>
 <ul class="simple">
@@ -118,7 +118,7 @@
 <p>先自己试着预测画一个波形，下面我们来动手实验验证一下你的预测对不对吧！</p>
 <p>先写代码，把三种DFF/latch写入同一个文件dff.v里：</p>
 <section id="a-resetdff">
-<h4><span class="section-number">3.1.1.1. </span>a) 同步RESET的DFF：<a class="headerlink" href="#a-resetdff" title="Link to this heading"></a></h4>
+<h4>a) 同步RESET的DFF：<a class="headerlink" href="#a-resetdff" title="Link to this heading"></a></h4>
 <div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">dff_sync_reset</span><span class="w"> </span><span class="p">(</span>
 <span class="n">data</span><span class="w">   </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data Input</span>
 <span class="n">clk</span><span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="c1">// Clock Input</span>
@@ -142,7 +142,7 @@
 </div>
 </section>
 <section id="b-resetdff">
-<h4><span class="section-number">3.1.1.2. </span>b) 异步RESET的DFF：<a class="headerlink" href="#b-resetdff" title="Link to this heading"></a></h4>
+<h4>b) 异步RESET的DFF：<a class="headerlink" href="#b-resetdff" title="Link to this heading"></a></h4>
 <div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">dff_async_reset</span><span class="w"> </span><span class="p">(</span>
 <span class="n">data</span><span class="w">   </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data Input</span>
 <span class="n">clk</span><span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="c1">// Clock Input</span>
@@ -166,7 +166,7 @@
 </div>
 </section>
 <section id="c-d-ata-d-latch">
-<h4><span class="section-number">3.1.1.3. </span>c) D(ata)型锁存器 (D-Latch)：<a class="headerlink" href="#c-d-ata-d-latch" title="Link to this heading"></a></h4>
+<h4>c) D(ata)型锁存器 (D-Latch)：<a class="headerlink" href="#c-d-ata-d-latch" title="Link to this heading"></a></h4>
 <div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">dlatch_reset</span><span class="w"> </span><span class="p">(</span>
 <span class="n">data</span><span class="w">   </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data Input</span>
 <span class="n">en</span><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="c1">// LatchInput</span>
@@ -190,7 +190,7 @@
 </div>
 </section>
 <section id="testbench">
-<h4><span class="section-number">3.1.1.4. </span>再写比较三者不同的统一Testbench：<a class="headerlink" href="#testbench" title="Link to this heading"></a></h4>
+<h4>再写比较三者不同的统一Testbench：<a class="headerlink" href="#testbench" title="Link to this heading"></a></h4>
 <div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
 <span class="no">`include</span><span class="w"> </span><span class="s">&quot;dff.v&quot;</span>
 
@@ -267,7 +267,7 @@ vvp<span class="w"> </span>-n<span class="w"> </span>wave
 </section>
 </section>
 <section id="id4">
-<h3><span class="section-number">3.1.2. </span><em>2、普通计数器</em><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<h3><em>2、普通计数器</em><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <p>计数器是Verilog里最常见的时序逻辑，其代码（一种实现方式）如下：</p>
 <div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">counter</span><span class="w">    </span><span class="p">(</span>
 <span class="n">out</span><span class="w">     </span><span class="p">,</span><span class="w">  </span><span class="c1">// Output of the counter</span>
@@ -293,7 +293,7 @@ vvp<span class="w"> </span>-n<span class="w"> </span>wave
 <p>思考一下，如out已经达到8’hFF，它会如何变化？先预测一下，下面我们用iverilog或者FPGA验证一下结果。</p>
 <p>1）用Iverilog：</p>
 <section id="id5">
-<h4><span class="section-number">3.1.2.1. </span>先写Testbench:<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<h4>先写Testbench:<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
 <div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
 <span class="no">`include</span><span class="w"> </span><span class="s">&quot;counter.v&quot;</span>
 
@@ -341,13 +341,13 @@ gtkwave<span class="w"> </span>wave.vcd<span class="w"> </span>
 </section>
 <hr class="docutils" />
 <section id="id6">
-<h2><span class="section-number">3.2. </span>练习<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<h2>练习<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>[问题1]</strong> 请简要回答上面三者：(a) 同步RESET的DFF、(b)异步RESET的DFF、(c)D-Latch在行为上的不同点。</p>
 </div>
 <section id="id7">
-<h3><span class="section-number">3.2.1. </span><em>1、上下计数器</em><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<h3><em>1、上下计数器</em><a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <p>上下计数器是指计数器可以实现向上数（12345…）与向下数（54321…）的计算数，被计数信号从clk端输入。向下向下数的模式需要设置一个模式控制端口“up_down”:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">up_down</span><span class="o">=</span><span class="mi">0</span><span class="p">:</span> <span class="n">向上数</span>
 <span class="n">up_down</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span> <span class="n">向下数</span>
@@ -359,7 +359,7 @@ gtkwave<span class="w"> </span>wave.vcd<span class="w"> </span>
 </div>
 </section>
 <section id="id8">
-<h3><span class="section-number">3.2.2. </span><em>2、格雷码计数器</em><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<h3><em>2、格雷码计数器</em><a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <p>格雷码（Gray Code），又称为反射码、单增码、循环码等，是一种二进制编码方式，最早由美国计算机科学家达尔文·格雷（Darwin Gray）在1959年提出。格雷码的特点是在相邻的两个数值之间，只有一个二进制位不同，这种特性使得格雷码在硬件中进行数值切换时，可以最小化错误发生的概率，从而减少开关动作的次数，提高电子设备的可靠性和稳定性。</p>
 <p>格雷码基础公式：<a class="reference external" href="https://baike.baidu.com/item/%E6%A0%BC%E9%9B%B7%E7%A0%81/6510858">https://baike.baidu.com/item/格雷码/6510858</a></p>
 <table class="docutils align-default">
@@ -434,8 +434,8 @@ gtkwave<span class="w"> </span>wave.vcd<span class="w"> </span>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="lab1.html" class="btn btn-neutral float-left" title="2. 实验1、组合逻辑" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lab3.html" class="btn btn-neutral float-right" title="4. 实验3、Verilog里费解的概念" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lab1.html" class="btn btn-neutral float-left" title="实验1、组合逻辑" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab3.html" class="btn btn-neutral float-right" title="实验3、Verilog里费解的概念" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

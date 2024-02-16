@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5. 实验4、有限状态机 &mdash; 数字系统设计与实践-实验  documentation</title>
+  <title>实验4、有限状态机 &mdash; 数字系统设计与实践-实验  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6. 实验5、传输接口UART" href="lab5.html" />
-    <link rel="prev" title="4. 实验3、Verilog里费解的概念" href="lab3.html" /> 
+    <link rel="next" title="实验5、传输接口UART" href="lab5.html" />
+    <link rel="prev" title="实验3、Verilog里费解的概念" href="lab3.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,23 +44,23 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="install.html">1. 实验0、实验准备</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab1.html">2. 实验1、组合逻辑</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab2.html">3. 实验2、时序逻辑</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab3.html">4. 实验3、Verilog里费解的概念</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">5. 实验4、有限状态机</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">5.1. 教程</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">5.2. 练习</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">5.2.1. <em>1. 验证“电气蜗牛”</em></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">5.2.2. <em>2、交通灯设计</em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2.html">实验2、时序逻辑</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、Verilog里费解的概念</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验4、有限状态机</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">教程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">练习</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><em>1. 验证“电气蜗牛”</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5"><em>2、交通灯设计</em></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lab5.html">6. 实验5、传输接口UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab6.html">7. 实验6、初识逻辑综合</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab7.html">8. 实验7、Macro应用-存储器</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lab8.html">9. 实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
 </ul>
 
         </div>
@@ -77,7 +77,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">5. </span>实验4、有限状态机</li>
+      <li class="breadcrumb-item active">实验4、有限状态机</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/lab4.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,9 +88,9 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">5. </span>实验4、有限状态机<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1>实验4、有限状态机<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <section id="id2">
-<h2><span class="section-number">5.1. </span>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p><img alt="电气蜗牛" src="_images/woniu.png" /></p>
 <p>有一个经典的有限状态机的例子被称为“电气蜗牛”：即“电气蜗牛”会在由“1”和“0”的数字信号上爬动，每当它连续走过“110”的时候它就会叫一声，请写出“电气蜗牛”的有限状态机Verilog代码。</p>
 <p>首先画出状态转移图：
@@ -147,25 +147,25 @@
 </section>
 <hr class="docutils" />
 <section id="id3">
-<h2><span class="section-number">5.2. </span>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<h2>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <section id="id4">
-<h3><span class="section-number">5.2.1. </span><em>1. 验证“电气蜗牛”</em><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<h3><em>1. 验证“电气蜗牛”</em><a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>[问题1]</strong> 请写一个testbench，用vivado或者iverilog验证“电气蜗牛”代码，实验报告中请截图仿真波形图。</p>
 </div>
 </section>
 <section id="id5">
-<h3><span class="section-number">5.2.2. </span><em>2、交通灯设计</em><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<h3><em>2、交通灯设计</em><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <p>理教旁边的十字路口实在需要一个交通灯啦！你现在要帮忙设计一个路口的交通灯，示意图如下。</p>
 <p><img alt="conf" src="_images/conf.png" /></p>
 <p>CLK周期5s，RST为high active reset，SA和SB为安装的传感器，比如SA（东西向）探测到有人的话，会输出一个1，然后东西向就需要变绿灯通行。如果SA和SB都有人，那就需要你对红黄绿灯转换时间的设计（需以5s为最低时间单位）啦。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>[问题2]</strong><br>
-Q1: 画出state-transfer diagram<br>
-Q2: 完成基于FSM的TrafficLightController module。<br>
-Q3: 写一个testbench测试证明Q2中的code是对的，结果时序图请截图提交。</p>
+2.1: 画出state-transfer diagram<br>
+2.2: 完成基于FSM的TrafficLightController module。<br>
+2.3: 写一个testbench测试证明Q2中的code是对的，结果时序图请截图提交。</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -179,8 +179,8 @@ Q3: 写一个testbench测试证明Q2中的code是对的，结果时序图请截�
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="lab3.html" class="btn btn-neutral float-left" title="4. 实验3、Verilog里费解的概念" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lab5.html" class="btn btn-neutral float-right" title="6. 实验5、传输接口UART" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lab3.html" class="btn btn-neutral float-left" title="实验3、Verilog里费解的概念" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lab5.html" class="btn btn-neutral float-right" title="实验5、传输接口UART" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

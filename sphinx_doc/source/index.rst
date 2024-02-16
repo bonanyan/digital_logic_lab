@@ -1,6 +1,6 @@
 .. created by sphinx-quickstart on Mon Jan  1 20:47:38 2024.
 
-数字系统设计与实践-实验：
+数字系统设计与实践-实验🦾
 ==============================================
 
 .. image:: _static/images/logo.jpg
@@ -13,7 +13,6 @@ Figure Above: A digital computer trainer to teach business people about how comp
 
 .. toctree::
    :maxdepth: 1
-   :numbered:
    :caption: 目录:
 
    install

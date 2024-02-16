@@ -83,9 +83,9 @@ CLK周期5s，RST为high active reset，SA和SB为安装的传感器，比如SA�
 
 ```{note}
 **[问题2]**<br>
-Q1: 画出state-transfer diagram<br>
-Q2: 完成基于FSM的TrafficLightController module。<br>
-Q3: 写一个testbench测试证明Q2中的code是对的，结果时序图请截图提交。
+2.1: 画出state-transfer diagram<br>
+2.2: 完成基于FSM的TrafficLightController module。<br>
+2.3: 写一个testbench测试证明Q2中的code是对的，结果时序图请截图提交。
 ```
 
 ```{note}
