@@ -24,7 +24,8 @@ decoder2_4_3 dut2(
 integer i; //integer is a 32b unsigned integer
 
 initial begin
-    $monitor("time=%4d, in=%4b, out0=%04b, out1=%04b, out2=%04b", $time, in, out1, out2, out3);
+    // $monitor("time=%4d, in=%4b, out0=%04b, out1=%04b, out2=%04b", $time, in, out1, out2, out3);
+    $monitor("%04x",out3);
     for(i=0; i<8; i=i+1) begin
         #10 in = i; 
     end
