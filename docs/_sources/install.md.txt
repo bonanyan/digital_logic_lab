@@ -2,6 +2,9 @@
 
 Verilog HDL是一款起始于1989年左右的硬件描述语言，至今用于FPGA与ASIC开发；针对FPGA与ASIC开发业已形成了不同的代码编写仿真验证环境工具：
 
+- FPGA: Field-Programmable Gate Array
+- ASIC: Application-Specific Integrated Circuits
+
 > **[思考]**
 > 都用Verilog HDL,FPGA与ASIC开发流程的区别是什么？
 

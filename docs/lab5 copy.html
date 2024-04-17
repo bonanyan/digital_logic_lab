@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>实验0、实验准备 &mdash; 数字系统设计与实践-实验  documentation</title>
+  <title>实验5、传输接口UART &mdash; 数字系统设计与实践-实验  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,9 +18,7 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="实验1、组合逻辑" href="lab1.html" />
-    <link rel="prev" title="数字系统设计与实践-实验🦾" href="index.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,12 +41,8 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">实验0、实验准备</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#fpga-xilinx-vivado">1-FPGA开发：Xilinx Vivado</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#asic-icarus-verilog-gtkwave">2-ASIC快速验证：Icarus Verilog+Gtkwave</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab2.html">实验2、时序逻辑</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、Verilog里费解的概念</a></li>
@@ -73,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">实验0、实验准备</li>
+      <li class="breadcrumb-item active">实验5、传输接口UART</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/install.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/lab5 copy.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -83,34 +77,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="id1">
-<h1>实验0、实验准备<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
-<p>Verilog HDL是一款起始于1989年左右的硬件描述语言，至今用于FPGA与ASIC开发；针对FPGA与ASIC开发业已形成了不同的代码编写仿真验证环境工具：</p>
-<ul class="simple">
-<li><p>FPGA: Field-Programmable Gate Array</p></li>
-<li><p>ASIC: Application-Specific Integrated Circuits</p></li>
-</ul>
-<blockquote>
-<div><p><strong>[思考]</strong>
-都用Verilog HDL,FPGA与ASIC开发流程的区别是什么？</p>
-</div></blockquote>
-<section id="fpga-xilinx-vivado">
-<h2>1-FPGA开发：Xilinx Vivado<a class="headerlink" href="#fpga-xilinx-vivado" title="Link to this heading"></a></h2>
-<p><a class="reference download internal" download="" href="_downloads/0bdf172a5692556f0a415ee59c3dacd7/00.vivado2019.1_install.pdf"><span class="xref download myst">安装教程</span></a></p>
+  <section id="uart">
+<h1>实验5、传输接口UART<a class="headerlink" href="#uart" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>教程<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>请依据<a class="reference download internal" download="" href="_downloads/5362aa4b28767a4454d5d38c310b2765/04.%E4%B8%B2%E5%8F%A3%E6%94%B6%E5%8F%91%E5%AE%9E%E9%AA%8C.pdf"><span class="xref download myst">串口收发实验</span></a>按步实现。</p>
 </section>
-<section id="asic-icarus-verilog-gtkwave">
-<h2>2-ASIC快速验证：Icarus Verilog+Gtkwave<a class="headerlink" href="#asic-icarus-verilog-gtkwave" title="Link to this heading"></a></h2>
-<p>安装教程：<a class="reference external" href="https://zhuanlan.zhihu.com/p/95081329">https://zhuanlan.zhihu.com/p/95081329</a></p>
+<hr class="docutils" />
+<section id="id2">
+<h2>练习<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>**[问题1]**UART的接口已经通过，请参照下面python程序，实现PC发送2个INT8的数字到FPGA，在FPGA上用数字电路将其求和，再送回一个16bit的结果数字。</p>
+</div>
 </section>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="数字系统设计与实践-实验🦾" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lab1.html" class="btn btn-neutral float-right" title="实验1、组合逻辑" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

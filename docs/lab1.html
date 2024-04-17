@@ -154,10 +154,47 @@
 </section>
 <section id="testbench">
 <h3><em>2、Testbench验证</em><a class="headerlink" href="#testbench" title="Link to this heading"></a></h3>
+<p>第一步：先写一下testbench <code class="docutils literal notranslate"><span class="pre">dff_tb.v</span></code>:</p>
+<div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
+<span class="no">`include</span><span class="w"> </span><span class="s">&quot;decoder2_4.v&quot;</span>
+
+<span class="k">module</span><span class="w"> </span><span class="n">decoder_testbench</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">in</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">out1</span><span class="p">,</span><span class="n">out2</span><span class="p">,</span><span class="n">out3</span><span class="p">;</span>
+
+<span class="n">decoder2_4_1</span><span class="w"> </span><span class="n">dut0</span><span class="p">(</span>
+<span class="p">.</span><span class="n">decode_in</span><span class="w">      </span><span class="p">(</span><span class="n">in</span><span class="p">)</span>
+<span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">decode_out</span><span class="w">   </span><span class="p">(</span><span class="n">out1</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="n">decoder2_4_2</span><span class="w"> </span><span class="n">dut1</span><span class="p">(</span>
+<span class="p">.</span><span class="n">decode_in</span><span class="w">      </span><span class="p">(</span><span class="n">in</span><span class="p">)</span>
+<span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">decode_out</span><span class="w">   </span><span class="p">(</span><span class="n">out2</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="n">decoder2_4_3</span><span class="w"> </span><span class="n">dut2</span><span class="p">(</span>
+<span class="p">.</span><span class="n">decode_in</span><span class="w">      </span><span class="p">(</span><span class="n">in</span><span class="p">)</span>
+<span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">decode_out</span><span class="w">   </span><span class="p">(</span><span class="n">out3</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="c1">//integer is a 32b unsigned integer</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nb">$monitor</span><span class="p">(</span><span class="s">&quot;time=%4d, in=%4b, out0=%04b, out1=%04b, out2=%04b&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">$time</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">,</span><span class="w"> </span><span class="n">out1</span><span class="p">,</span><span class="w"> </span><span class="n">out2</span><span class="p">,</span><span class="w"> </span><span class="n">out3</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// $monitor为Verilog系统自带函数, 格式像c++的printf一样，意为“每当要print的变量发生变化即打印”，同理还有$display(仅在当前仿真运行时间打印一样结果)</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mh">8</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="p">#</span><span class="mh">10</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
 <p>用iverilog快速验证一下：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="o">[</span>到当前存放dff.v和dff_tb.v的文件夹<span class="o">]</span>
-iverilog<span class="w"> </span>-o<span class="w"> </span>wave<span class="w"> </span>dff_tb.v
-vvp<span class="w"> </span>-n<span class="w"> </span>wave
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="o">[</span>到当前存放dff.v和dff_tb.v的文件夹<span class="o">]</span><span class="w"> </span><span class="c1"># 进入工作目录</span>
+iverilog<span class="w"> </span>-o<span class="w"> </span>wave<span class="w"> </span>dff_tb.v<span class="w"> </span><span class="c1"># 将dff_tb.v编译为wave可执行文件</span>
+vvp<span class="w"> </span>-n<span class="w"> </span>wave<span class="w"> </span><span class="c1">#运行该可执行文件进行仿真(simulation)</span>
 </pre></div>
 </div>
 <p>如果到此运行顺利的话，当前文件夹会生成一个新的wave.vcd（正如dff_tb.v里面写的$dumpfile(“wave.vcd”)所写)。然后用gtkwave打开这个波形：</p>
@@ -230,7 +267,9 @@ vvp<span class="w"> </span>-n<span class="w"> </span>wave
 <p>它就是长得像温度计。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>[问题2]</strong> 用Verilog HDL设计一个输入是1023位的温度计解码器，并写testbench验证。</p>
+<p><strong>[问题2]</strong></p>
+<p>2.1 用Verilog HDL设计一个输入是1023位的温度计解码器，用组合逻辑实现上述功能，并写testbench验证。</p>
+<p>2.2 温度计码很容易出错哦，比如出现1000011码字，在问题2.1的基础上改进加入报错端口，一旦有错码字，报错端口error=1，否则保持为0。请完成一个全新的设计：带校验功能的温度计解码！</p>
 </div>
 <ul class="simple">
 <li><p>提示：Verilog HDL支持for loop, <a class="reference external" href="http://staff.ustc.edu.cn/~songch/download/IEEE.1364-2005.pdf">Verilog-2005 standard manual</a>。</p></li>

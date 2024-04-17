@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>实验7、Macro应用-存储器 &mdash; 数字系统设计与实践-实验  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            数字系统设计与实践-实验
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">实验0、实验准备</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab2.html">实验2、时序逻辑</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、Verilog里费解的概念</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">数字系统设计与实践-实验</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">实验7、Macro应用-存储器</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lab7 copy.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="macro">
+<h1>实验7、Macro应用-存储器<a class="headerlink" href="#macro" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>教程<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3><em>4、“下个周期取数”</em><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>程序7:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
+<span class="k">module</span><span class="w"> </span><span class="n">test</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="n">set</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">mem</span><span class="w"> </span><span class="p">[</span><span class="mh">0</span><span class="o">:</span><span class="mh">20</span><span class="p">];</span><span class="w"> </span><span class="c1">//word length is [31:0], we define 16 words(address 0~15)</span>
+<span class="w">    </span><span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">20</span><span class="p">;</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">20</span><span class="p">;</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="nb">$display</span><span class="p">(</span><span class="s">&quot;%h&quot;</span><span class="p">,</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="k">endmodule</span>
+
+<span class="k">module</span><span class="w"> </span><span class="n">ram</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="n">CLK</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">D</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">Q</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">A</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="n">WE</span>
+<span class="p">);</span>
+
+<span class="k">parameter</span><span class="w"> </span><span class="n">LEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1024</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">mem_core</span><span class="w"> </span><span class="p">[</span><span class="mh">0</span><span class="o">:</span><span class="n">LEN</span><span class="o">-</span><span class="mh">1</span><span class="p">];</span>
+
+<span class="c1">// initial reset</span>
+<span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">LEN</span><span class="o">-</span><span class="mh">1</span><span class="p">;</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="n">mem_core</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">CLK</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">WE</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="n">mem_core</span><span class="p">[</span><span class="n">A</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">D</span><span class="p">;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="n">Q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">mem_core</span><span class="p">[</span><span class="n">A</span><span class="p">];</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+<span class="w">    </span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>[问题4]</strong>
+程序7为一个随机访问存储器（RAM）的基本行为模型，实验运行testbench,实现把数据32’hDEADBEEF放到存储器地址address=4里，然后把它通过data_out端口读出来再写入address=6里。</p>
+</div></blockquote>
+<p>提示：注意读数的一周期延迟。</p>
+</section>
+</section>
+<section id="id3">
+<h2>练习<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, 北京大学.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
