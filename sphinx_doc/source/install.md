@@ -12,6 +12,14 @@ Verilog HDL是一款起始于1989年左右的硬件描述语言，至今用于FP
 
 [安装教程](_static/assets/00.vivado2019.1_install.pdf)
 
+[流水灯上板测试](_static/assets/01.vivado下LED流水灯实验及仿真.pdf)
+
+- Alinx提供的Vivado安装
+[https://disk.pku.edu.cn/link/AA1F50EE726F9F495D9A873B6C55481233](https://disk.pku.edu.cn/link/AA1F50EE726F9F495D9A873B6C55481233)
+- Pickup Code: QkJa
+
 ## 2-ASIC快速验证：Icarus Verilog+Gtkwave
 
 安装教程：[https://zhuanlan.zhihu.com/p/95081329](https://zhuanlan.zhihu.com/p/95081329)
+
+- 注意安装后如在cmd找不到，请将iverilog/bin文件件添加到环境变量中。
