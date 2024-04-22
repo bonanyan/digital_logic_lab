@@ -39,6 +39,13 @@ Figure Above: A digital computer trainer to teach business people about how comp
 .. _template:
    _static/assets/report_template.docx
 
+
+Verilog 2005标准：standard_
+
+.. _standard:
+   _static/assets/IEEE.1364-2005_Verilog2005.pdf
+
+
 日程安排
 ==========
 .. csv-table:: 日程安排
