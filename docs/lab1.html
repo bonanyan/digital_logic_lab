@@ -154,7 +154,7 @@
 </section>
 <section id="testbench">
 <h3><em>2、Testbench验证</em><a class="headerlink" href="#testbench" title="Link to this heading"></a></h3>
-<p>第一步：先写一下testbench <code class="docutils literal notranslate"><span class="pre">dff_tb.v</span></code>:</p>
+<p>第一步：先写一下testbench <code class="docutils literal notranslate"><span class="pre">decoder_testbench.v</span></code>:</p>
 <div class="highlight-verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
 <span class="no">`include</span><span class="w"> </span><span class="s">&quot;decoder2_4.v&quot;</span>
 
@@ -198,7 +198,7 @@
 </div>
 <p>用iverilog快速验证一下：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="o">[</span>到当前存放dff.v和dff_tb.v的文件夹<span class="o">]</span><span class="w"> </span><span class="c1"># 进入工作目录</span>
-iverilog<span class="w"> </span>-o<span class="w"> </span>wave<span class="w"> </span>dff_tb.v<span class="w"> </span><span class="c1"># 将dff_tb.v编译为wave可执行文件</span>
+iverilog<span class="w"> </span>-o<span class="w"> </span>wave<span class="w"> </span>decoder_testbench.v<span class="w"> </span><span class="c1"># 将dff_tb.v编译为wave可执行文件</span>
 vvp<span class="w"> </span>-n<span class="w"> </span>wave<span class="w"> </span><span class="c1">#运行该可执行文件进行仿真(simulation)</span>
 </pre></div>
 </div>

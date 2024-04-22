@@ -62,7 +62,7 @@ endmodule
 
 ### *2、Testbench验证*
 
-第一步：先写一下testbench `dff_tb.v`:
+第一步：先写一下testbench `decoder_testbench.v`:
 ```verilog
 `timescale 1ns/1ns
 `include "decoder2_4.v"
@@ -109,7 +109,7 @@ endmodule
 用iverilog快速验证一下：
 ```bash
 cd [到当前存放dff.v和dff_tb.v的文件夹] # 进入工作目录
-iverilog -o wave dff_tb.v # 将dff_tb.v编译为wave可执行文件
+iverilog -o wave decoder_testbench.v # 将dff_tb.v编译为wave可执行文件
 vvp -n wave #运行该可执行文件进行仿真(simulation)
 ```
 如果到此运行顺利的话，当前文件夹会生成一个新的wave.vcd（正如dff_tb.v里面写的$dumpfile("wave.vcd")所写)。然后用gtkwave打开这个波形：
