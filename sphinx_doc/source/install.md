@@ -16,7 +16,6 @@ Verilog HDL是一款起始于1989年左右的硬件描述语言，至今用于FP
 
 - Alinx提供的Vivado安装
 [https://disk.pku.edu.cn/link/AA1F50EE726F9F495D9A873B6C55481233](https://disk.pku.edu.cn/link/AA1F50EE726F9F495D9A873B6C55481233)
-- Pickup Code: QkJa
 
 ## 2-ASIC快速验证：Icarus Verilog+Gtkwave
 
