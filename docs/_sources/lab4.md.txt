@@ -2,6 +2,8 @@
 
 ## 教程
 
+- FSM Template [【link】](https://www.intel.com/content/www/us/en/support/programmable/support-resources/design-examples/horizontal/ver-state-machine.html)
+
 ![电气蜗牛](_static/assets/woniu.png)
 
 有一个经典的有限状态机的例子被称为“电气蜗牛”：即“电气蜗牛”会在由“1”和“0”的数字信号上爬动，每当它连续走过“110”的时候它就会叫一声，请写出“电气蜗牛”的有限状态机Verilog代码。
