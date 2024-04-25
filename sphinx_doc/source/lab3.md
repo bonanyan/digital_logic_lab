@@ -209,7 +209,8 @@ always #1 clk = ~clk;
 
 initial begin
     rst = 0;
-    #10 rst = 1
+    #10 rst = 1;
+    #10 counter = 4'd8;
     #10 rst = 0;
     #100 $finish;
 end
