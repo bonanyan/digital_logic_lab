@@ -52,7 +52,7 @@ always @(posedge clk or negedge rstb) begin
                     state <= STATE_R3;
                 else
                     state <= STATE_R2;
-            default://STATE_R3
+            default://STATE_R3,为了可综合必须要有default
                 if(data_in==1)
                         state <= STATE_R1;
                     else
