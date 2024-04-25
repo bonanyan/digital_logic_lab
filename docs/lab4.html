@@ -124,7 +124,7 @@
 <span class="w">    </span><span class="k">else</span>
 <span class="w">        </span><span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 <span class="w">            </span><span class="nl">STAT_IDLE:</span>
-<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">data_in</span><span class="o">==</span><span class="mh">1</span><span class="p">)</span>
+<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">data_in</span><span class="o">==</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="c1">//或者写成if(data_in)</span>
 <span class="w">                    </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_R1</span><span class="p">;</span>
 <span class="w">            </span><span class="nl">STATE_R1:</span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">data_in</span><span class="o">==</span><span class="mh">1</span><span class="p">)</span>
@@ -132,10 +132,10 @@
 <span class="w">                </span><span class="k">else</span>
 <span class="w">                    </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STAT_IDLE</span><span class="p">;</span>
 <span class="w">            </span><span class="nl">STATE_R2:</span>
-<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">data_in</span><span class="o">==</span><span class="mh">0</span><span class="p">)</span>
+<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">data_in</span><span class="o">==</span><span class="mh">0</span><span class="p">)</span><span class="c1">//或者写成if(~data_in)或者if(!data_in)</span>
 <span class="w">                    </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_R3</span><span class="p">;</span>
 <span class="w">                </span><span class="k">else</span>
-<span class="w">                    </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_IDLE</span><span class="p">;</span>
+<span class="w">                    </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_R2</span><span class="p">;</span>
 <span class="w">            </span><span class="k">default</span><span class="o">:</span><span class="c1">//STATE_R3</span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">data_in</span><span class="o">==</span><span class="mh">1</span><span class="p">)</span>
 <span class="w">                        </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_R1</span><span class="p">;</span>

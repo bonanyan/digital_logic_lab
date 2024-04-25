@@ -40,7 +40,7 @@ always @(posedge clk or negedge rstb) begin
     else
         case(state)
             STAT_IDLE:
-                if(data_in==1)
+                if(data_in==1) //或者写成if(data_in)
                     state <= STATE_R1;
             STATE_R1:
                 if(data_in==1)
@@ -48,10 +48,10 @@ always @(posedge clk or negedge rstb) begin
                 else
                     state <= STAT_IDLE;
             STATE_R2:
-                if(data_in==0)
+                if(data_in==0)//或者写成if(~data_in)或者if(!data_in)
                     state <= STATE_R3;
                 else
-                    state <= STATE_IDLE;
+                    state <= STATE_R2;
             default://STATE_R3
                 if(data_in==1)
                         state <= STATE_R1;
