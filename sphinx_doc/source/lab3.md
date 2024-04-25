@@ -202,7 +202,7 @@ module test;
 reg [3:0] counter;
 reg rst;
 reg clk;
-reg [1:0] led;
+wire [1:0] led;
 
 initial clk = 0;
 always #1 clk = ~clk;
@@ -216,7 +216,7 @@ initial begin
 end
 
 initial begin
-    $monit(counter);
+    $monitor(counter);
 end
 
 always @(posedge clk) begin
