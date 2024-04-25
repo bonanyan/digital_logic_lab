@@ -125,7 +125,6 @@
 
 <span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">8</span><span class="mi">&#39;d16</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
-<span class="c1">//与程序1唯一的不同：换成了阻塞赋值</span>
 <span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span><span class="w"> </span>
 <span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
 <span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
@@ -160,9 +159,10 @@
 
 <span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="mh">8</span><span class="mi">&#39;d16</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="n">i</span><span class="o">&lt;=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">a</span><span class="o">&lt;=</span><span class="n">i</span><span class="p">;</span>
-<span class="w">    </span><span class="n">b</span><span class="o">&lt;=</span><span class="n">a</span><span class="p">;</span>
+<span class="c1">//与程序1唯一的不同：换成了阻塞赋值</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
 <span class="k">end</span>
 <span class="k">end</span>
 

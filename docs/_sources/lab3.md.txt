@@ -35,7 +35,6 @@ end
 
 always @(posedge clk) begin
 if(i<=8'd16) begin
-//与程序1唯一的不同：换成了阻塞赋值
     i <= i+1; 
     a <= i;
     b <= a;
@@ -71,9 +70,10 @@ end
 
 always @(posedge clk) begin
 if(i<=8'd16) begin
-    i<=i+1;
-    a<=i;
-    b<=a;
+//与程序1唯一的不同：换成了阻塞赋值
+    i = i+1;
+    a = i;
+    b = a;
 end
 end
 

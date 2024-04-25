@@ -131,7 +131,7 @@
 <span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">q</span><span class="p">;</span><span class="c1">//Output Ports</span>
 
 <span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">~</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
 <span class="k">end</span><span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
@@ -155,7 +155,7 @@
 <span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">q</span><span class="p">;</span><span class="c1">//Output Ports</span>
 
 <span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">reset</span><span class="p">)</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">~</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
 <span class="k">end</span><span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
@@ -179,7 +179,7 @@
 <span class="k">output</span><span class="w"> </span><span class="kt">reg</span><span class="w"> </span><span class="n">q</span><span class="p">;</span><span class="w"> </span><span class="c1">//Output Ports</span>
 
 <span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">en</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">reset</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">data</span><span class="p">)</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">~</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
 <span class="k">end</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">en</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>

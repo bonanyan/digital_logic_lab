@@ -32,7 +32,7 @@ input data, clk, reset ; //Input Ports
 output reg q;//Output Ports
 
 always @ ( posedge clk)
-if (~reset) begin
+if (reset) begin
   q <= 1'b0;
 end  else begin
   q <= data;
@@ -55,7 +55,7 @@ input data, clk, reset ; //Input Ports
 output reg q;//Output Ports
 
 always @ ( posedge clk or posedge reset)
-if (~reset) begin
+if (reset) begin
   q <= 1'b0;
 end  else begin
   q <= data;
@@ -78,7 +78,7 @@ input data, en, reset ; //Input Ports
 output reg q; //Output Ports
 
 always @ ( en or reset or data)
-if (~reset) begin
+if (reset) begin
   q <= 1'b0;
 end else if (en) begin
   q <= data;
