@@ -195,7 +195,7 @@ end
 endmodule
 ```
 
-程序6
+程序6:
 ```Verilog
 module test;
 
@@ -209,7 +209,6 @@ always #1 clk = ~clk;
 
 initial begin
     rst = 0;
-    led = 2'd0;
     #10 rst = 1
     #10 rst = 0;
     #100 $finish;
