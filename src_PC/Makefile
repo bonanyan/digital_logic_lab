@@ -1,2 +1,0 @@
-default:
-	python main.py

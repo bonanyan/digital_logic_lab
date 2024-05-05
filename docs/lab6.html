@@ -50,7 +50,30 @@
 <li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、Verilog里费解的概念</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">实验6、初识逻辑综合</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验6、初识逻辑综合</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">第一步：远程连接我们的服务器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">方法1：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">方法2：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">说明：</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rtl-design-file">第二步：把本地的RTL design file上传到服务器自己的账户里面去</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">方法1：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">方法2：</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#genus">第三步：在服务器上进行逻辑综合（我们用Genus）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-post-syn">Pre-和Post-Syn仿真</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pre-syn-post-syntestbench-v">具体的pre-syn &amp; post-syn的testbench.v对比为：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">下面给一下为师我跑的带标记的波形图：</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">练习</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
 </ul>
@@ -81,7 +104,340 @@
              
   <section id="id1">
 <h1>实验6、初识逻辑综合<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
-<p>待添加</p>
+<section id="id2">
+<h2>教程<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>逻辑综合（logical synthesis）主要将Register-Transfer-Level (RTL)级的硬件描述语言代码转换为结构化表示。如下面的可综合的Verilog HDL写的可配置记数器在逻辑综合前（RTL）与逻辑综合后（gate-level netlist）的形式分别为【先看一眼logical syn大概是在干啥，后面我们一步一步跟着做一下】：</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>可配置记数器（programable counter）指的是记数器除了正常向上记数功能外，还可以进入一个额外的“设置”模式，直接把内部DFF的Q端设置成为某数值。</p>
+</div>
+<p><img alt="LogicSynDiagram" src="_images/logicsyn.png" /></p>
+<ul class="simple">
+<li><p>上图中Pre-syn RTL code【<a class="reference download internal" download="" href="_downloads/178cd0ef571ca66dbf1be9525992df60/program_counter.v"><span class="xref download myst">program_counter.v</span></a>】</p></li>
+<li><p>上图中Post-syn gate-level netlist（由Cadence Genus工具进行逻辑综合的）【<a class="reference download internal" download="" href="_downloads/a0f002264c9954aa1fbbbbea6b0b8e94/ProgramCounter.vg"><span class="xref download myst">ProgramCounter.vg</span></a>】</p></li>
+</ul>
+<p>下面我们分三步完成上述逻辑综合工作：</p>
+<section id="id3">
+<h3>第一步：远程连接我们的服务器<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<section id="id4">
+<h4>方法1：<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<p>前提：连接校园网（因为我们的服务器在校园内局域网，如果你在校外需要开北大VPN）
+打开powershell或者terminal,直接输入</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.189
+</pre></div>
+</div>
+<p>然后输入你的密码即可，注意linux命令行中输入密码过程为了保密不显示出来，输完密码按回车就行。</p>
+</section>
+<section id="id5">
+<h4>方法2：<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<p>如果用windows的话也可以用putty或者Xshell(对学生免费)设置ssh连接，简明教程可以百度到：</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://blog.csdn.net/hanjun0612/article/details/118486776">Xshell连接教程</a></p></li>
+<li><p><a class="reference external" href="https://cloud.tencent.com/developer/article/1332950">Putty连接教程</a></p></li>
+</ul>
+</section>
+<section id="id6">
+<h4>说明：<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>无论用powershell、terminal、Xshell还是putty，你的远程服务器上的账户为：</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>username:<span class="w"> </span>你的名字拼音+姓首字母，全小写
+password:<span class="w"> </span>pku0627
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>不管用哪种方法，成功完成远程连接后应该显示类似下图的界面，前面是你自己的账户名，后面“bn-cent”是我们的工作站的主机名：
+<img alt="loginTerminalScreenShot" src="_images/screenshot_1.png" />
+如果成功了，现在你就可以在我们的服务器上通过网络ssh协议登录并且可以“为所欲为”了</p></li>
+<li><p>首次进去之后如果怕别人进你的账户，可以自行改密码（方法请自己百度/问LLM去）；我们的系统是CentOS 7.9的。</p></li>
+<li><p>我们远程用服务器没有图形界面的，只用命令行。</p></li>
+<li><p>如果想用服务器上需要GUI的工具，比如gvim、gtkwave等，需要在ssh的时候加上-X或者-Y选项，并在自己的本地电脑上安装X11 Server(如<a class="reference external" href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>)，具体说明可见<a class="reference external" href="https://zhuanlan.zhihu.com/p/66075449">这里</a>：</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.189<span class="w"> </span>-Y
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rtl-design-file">
+<h3>第二步：把本地的RTL design file上传到服务器自己的账户里面去<a class="headerlink" href="#rtl-design-file" title="Link to this heading"></a></h3>
+<section id="id7">
+<h4>方法1：<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>打开powershell或者terminal,直接输入</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="o">[</span>你的RTL<span class="w"> </span>.v<span class="w"> </span>file所在的文件夹<span class="o">]</span>
+scp<span class="w"> </span><span class="o">[</span>你的design<span class="w"> </span>file.v<span class="o">]</span><span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.189:~/
+</pre></div>
+</div>
+<p>然后输个远程账户的密码就传过去了。</p>
+<p>说明：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">scp</span></code>这句的意思就是把你的design file.v上传到IP地址是162.105.19.189的～（用户根目录）里去。</p></li>
+</ul>
+</section>
+<section id="id8">
+<h4>方法2：<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>利用开源免费图形界面工具Windows上的<a class="reference external" href="https://winscp.net/eng/index.php">WinSCP</a>或MacOS上的小黄鸭<a class="reference external" href="https://cyberduck.io">CyberDuck</a>，主打一个拖拽操作十分简单</p></li>
+<li><p>具体使用方法请自行百度/问LLM，学习时间约3分钟以内。</p></li>
+</ul>
+</section>
+</section>
+<section id="genus">
+<h3>第三步：在服务器上进行逻辑综合（我们用Genus）<a class="headerlink" href="#genus" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>为师我准备了示例文件夹：/home/share/GenusSyn，先把它copy-paste到自己的根目录：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>/home/opt/share/GenusSyn<span class="w"> </span>~/
+<span class="nb">cd</span><span class="w"> </span>~/GenusSyn
+</pre></div>
+</div>
+<p>复制过来之后可以先用<code class="docutils literal notranslate"><span class="pre">ls</span></code>看一下目录：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|-- makefile
+|-- src
+|   `-- program_counter.v
+`-- syn.tcl
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>然后直接输入</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make
+</pre></div>
+</div>
+<p>稍等几分钟，因为这个例子代表已经验证过没有问题，所以应该可以跑出来：
+<img alt="genus run done" src="_images/screenshot_2.png" /></p>
+<p>现在以“&#64;genus:root&gt;”开头说明是在genus workspace下，输入<code class="docutils literal notranslate"><span class="pre">exit</span></code>退出到bash shell环境下，会发现多了几个文件：
+<img alt="genus run done2" src="_images/screenshot_3.png" /></p>
+<p>现在的GenusSyn folder包含以下内容:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|-- fv
+|   `-- ProgramCounter
+|-- gen
+|   |-- ProgramCounter.sdc
+|   |-- ProgramCounter.sdf
+|   `-- ProgramCounter.vg
+|-- genus.cmd
+|-- genus.log
+|-- makefile
+|-- report
+|   |-- area.rep
+|   |-- cell.rep
+|   |-- power.rep
+|   `-- timing.rep
+|-- src
+|   `-- program_counter.v
+`-- syn.tcl
+</pre></div>
+</div>
+<p>其中GenusSyn/gen里面的东西是综合出来的结果，包括上述提到的：</p>
+<ul class="simple">
+<li><p>ProgramCounter.vg: 生成的gate-level netlist</p></li>
+<li><p>ProgramCounter.sdf: 生成的gate-level netlist里的timing信息</p></li>
+<li><p>Programcounter.sdc: 我们加的constraints</p></li>
+</ul>
+</section>
+<section id="pre-post-syn">
+<h3>Pre-和Post-Syn仿真<a class="headerlink" href="#pre-post-syn" title="Link to this heading"></a></h3>
+<p>Pre-Syn仿真就是用testbench.v去include RTL design file（如本例中为program_counter.v）即可。</p>
+<p>而Post-Syn仿真也很简单，与pre-syn simulation唯“三”不同的地方就是：</p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">`include</span> <span class="pre">ProgramCounter.vg</span></code>替代<code class="docutils literal notranslate"> <span class="pre">`include</span> <span class="pre">program_counter.v</span></code></p></li>
+<li><p>ProgramCounter.vg里引用了PDK的标准库的基础门电路单元，比如aoi (aoi是and-or-inverter的简称，表达式为c=~(a &amp; b | c))、and2等等，因此必须再include上pdk标准单元库的门电路行为模型，我们本次用的openpdk-15nm的Verilog行业模型在<code class="docutils literal notranslate"><span class="pre">/home/opt/pdk/nangate15nm/front_end/verilog/NanGate_15nm_OCL_conditional.v</span></code>，所以要在module外面加上：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`include</span><span class="w"> </span><span class="s">&quot;/home/opt/pdk/nangate15nm/front_end/verilog/NanGate_15nm_OCL_conditional.v&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>在testbench.v里testbench module内部增加一块代码：</p></li>
+</ol>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;ProgramCounter.sdf&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>当然注意要让运行的程序能找到.sdf file，比如可以加上它自己的路径：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;/home/bonany/GenusSyn/gen/ProgramCounter.sdf&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<section id="pre-syn-post-syntestbench-v">
+<h4>具体的pre-syn &amp; post-syn的testbench.v对比为：<a class="headerlink" href="#pre-syn-post-syntestbench-v" title="Link to this heading"></a></h4>
+<p>Pre-syn testbench.v:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
+<span class="no">`include</span><span class="w"> </span><span class="s">&quot;program_counter.v&quot;</span>
+<span class="k">module</span><span class="w"> </span><span class="n">testbench</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">en</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="p">,</span><span class="w"> </span><span class="n">wae</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataIn</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataOut</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;wave.vcd&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">$dumpvars</span><span class="p">(</span><span class="mh">0</span><span class="p">);</span>
+<span class="k">end</span>
+
+<span class="n">ProgramCounter</span><span class="w"> </span><span class="n">u1</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">reset</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">dataIn</span><span class="p">(</span><span class="n">dataIn</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">dataOut</span><span class="p">(</span><span class="n">dataOut</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">writeEnable</span><span class="p">(</span><span class="n">we</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">writeAdd</span><span class="p">(</span><span class="n">wae</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">countEnable</span><span class="p">(</span><span class="n">en</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="o">=~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d100</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
+<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
+<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d10</span><span class="p">;</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
+<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d200</span><span class="p">;</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">17</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>Post-syn testbench.v:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
+<span class="c1">//-----------newly revised--------------</span>
+<span class="no">`include</span><span class="w"> </span><span class="s">&quot;ProgramCounter.vg&quot;</span>
+<span class="no">`include</span><span class="w"> </span><span class="s">&quot;/home/opt/pdk/nangate15nm/front_end/verilog/NanGate_15nm_OCL_conditional.v&quot;</span>
+<span class="c1">//-----------newly revised end----------</span>
+<span class="k">module</span><span class="w"> </span><span class="n">testbench</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">en</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="p">,</span><span class="w"> </span><span class="n">wae</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataIn</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataOut</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;wave.vcd&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">$dumpvars</span><span class="p">(</span><span class="mh">0</span><span class="p">);</span>
+<span class="k">end</span>
+
+<span class="c1">//-----------newly revised--------------</span>
+<span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;/home/bonany/GenusSyn/gen/ProgramCounter.sdf&quot;</span><span class="p">);</span>
+<span class="c1">//-----------newly revised end----------</span>
+
+<span class="n">ProgramCounter</span><span class="w"> </span><span class="n">u1</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">reset</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">dataIn</span><span class="p">(</span><span class="n">dataIn</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">dataOut</span><span class="p">(</span><span class="n">dataOut</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">writeEnable</span><span class="p">(</span><span class="n">we</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">writeAdd</span><span class="p">(</span><span class="n">wae</span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">countEnable</span><span class="p">(</span><span class="n">en</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="o">=~</span><span class="n">clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d100</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
+<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
+<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d10</span><span class="p">;</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
+<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d200</span><span class="p">;</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
+<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">17</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>在跑上面的程序时，一定要注意路径，问一下include的东西simulator是否能找到。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>因为我们用的是一个开源标准库，所以功能并不完善，$sdf_annotate的东西可能会被忽略，因此本实验仅作验证流程演示，post-syn仿真时可能延迟在波形中无法显示。</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="id9">
+<h4>下面给一下为师我跑的带标记的波形图：<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>pre-syn simulation results:
+<img alt="pre-syn simulation waveform" src="_images/screenshot_4_1.png" /></p></li>
+<li><p>post-syn simulation results:
+<img alt="post-syn simulation waveform" src="_images/screenshot_5_1.png" /></p></li>
+</ul>
+<p>post-syn仿真验证功能通过:D</p>
+<hr class="docutils" />
+<p>注意：生成的PPA报告在GenusSyn/report里。</p>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="id10">
+<h2>练习<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>[问题1]</strong> 请对于实验四中自己设计的交通灯控制器进行逻辑综合，并进行综合后仿真验证（post-synthesis simulation，或者称为post-syn simulation）。请在报告中提交：（1）带标记的波形图（pre-与post-syn仿真的）功能验证（2）通过查看综合报告（synthesis report）参数填写附表1（见下方）。</p>
+</div>
+<p>附表1：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Specs</p></th>
+<th class="head text-center"><p>Unit</p></th>
+<th class="head text-center"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>Fastest Working Frequency</p></td>
+<td class="text-center"><p>Hz</p></td>
+<td class="text-center"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>Power</p></td>
+<td class="text-center"><p>W</p></td>
+<td class="text-center"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>Cell Number</p></td>
+<td class="text-center"><p>1</p></td>
+<td class="text-center"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>Area</p></td>
+<td class="text-center"><p>um^2</p></td>
+<td class="text-center"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 
 

@@ -51,7 +51,21 @@
 <li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">实验7、Macro应用-存储器</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验7、Macro应用-存储器</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regfile"><em>1、RegFile</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ram-with-sync-read"><em>2、RAM with sync read</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ram-with-async-read"><em>3、RAM with async read</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testbench"><em>4、Testbench</em></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">练习</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><em>基础概念分辨</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ramfifo"><em>基于RAM的FIFO</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
 </ul>
 
@@ -81,7 +95,277 @@
              
   <section id="macro">
 <h1>实验7、Macro应用-存储器<a class="headerlink" href="#macro" title="Link to this heading"></a></h1>
-<p>待添加</p>
+<section id="id1">
+<h2>教程<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>我们介绍几种常见的块状存储器：</p>
+<ul class="simple">
+<li><p>register file(简称RegFile,一般翻译为寄存器堆或寄存器文件)</p></li>
+<li><p>random-access memory (RAM,一般翻译为随机访问存储器)</p>
+<ul>
+<li><p>RAM with synchronous read (同步读出)</p></li>
+<li><p>RAM with asynchronous read (异步读出)</p></li>
+</ul>
+</li>
+</ul>
+<section id="regfile">
+<h3><em>1、RegFile</em><a class="headerlink" href="#regfile" title="Link to this heading"></a></h3>
+<p>一个dual-port(双读写口)的RegFile:</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">RegisterFile</span><span class="w"> </span><span class="p">#(</span>
+<span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">DataWidth</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="p">,</span>
+<span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">NumRegs</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="p">,</span>
+<span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">IndexWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">$clog2</span><span class="p">(</span><span class="n">NumRegs</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="n">clk</span><span class="p">,</span>
+<span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="n">writeEn</span><span class="p">,</span>
+<span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="p">[</span><span class="n">IndexWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">writeAddr</span><span class="p">,</span>
+<span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="n">DataWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">writeData</span><span class="p">,</span>
+<span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="p">[</span><span class="n">IndexWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">readAddr1</span><span class="p">,</span>
+<span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="p">[</span><span class="n">IndexWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">readAddr2</span><span class="p">,</span>
+<span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">DataWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">readData1</span><span class="p">,</span>
+<span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">DataWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">readData2</span>
+<span class="p">);</span>
+
+<span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="n">DataWidth</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">regs</span><span class="p">[</span><span class="n">NumRegs</span><span class="p">];</span>
+
+<span class="w">  </span><span class="k">always_ff</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">writeEn</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">      </span><span class="n">regs</span><span class="p">[</span><span class="n">writeAddr</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">writeData</span><span class="p">;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">end</span>
+
+<span class="w">  </span><span class="k">assign</span><span class="w"> </span><span class="n">readData1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">regs</span><span class="p">[</span><span class="n">readAddr1</span><span class="p">];</span>
+<span class="w">  </span><span class="k">assign</span><span class="w"> </span><span class="n">readData2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">regs</span><span class="p">[</span><span class="n">readAddr2</span><span class="p">];</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>寄存器文件一般就是用DFF直接堆成的，将寄存器们堆成像文件一样，可同时读写（读是Q端读、写是D端写）。上面的32bit的寄存器文件，就是常见的32位CPU中数据通路中用到的片上32位寄存器文件。但是，我们平常用到的主存可不一样，主存一般来说是RAM（见下方）。</p>
+</section>
+<section id="ram-with-sync-read">
+<h3><em>2、RAM with sync read</em><a class="headerlink" href="#ram-with-sync-read" title="Link to this heading"></a></h3>
+<p>一般的RAM都是通过全定制芯片设计流程设计的，这里我们给出的只是<strong>behavioral model</strong>，也就是“行为模型”（端口、行为和正常的一模一样，但它只是基于Verilog的行为描述，一般来说不是由DFF而是由RAM bitcell组成）：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">ram_sr</span><span class="w"> </span><span class="p">#</span><span class="w"> </span>
+<span class="p">(</span><span class="k">parameter</span><span class="w"> </span><span class="n">DATA_WIDTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="p">,</span><span class="w"> </span><span class="n">ADDR_WIDTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="p">)</span>
+<span class="p">(</span>
+<span class="n">clk</span><span class="w">         </span><span class="p">,</span><span class="w"> </span><span class="c1">// Clock Input</span>
+<span class="n">address</span><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="c1">// Address Input</span>
+<span class="n">d</span><span class="w">           </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data input</span>
+<span class="n">q</span><span class="w">           </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data output</span>
+<span class="n">cs</span><span class="w">          </span><span class="p">,</span><span class="w"> </span><span class="c1">// Chip Select</span>
+<span class="n">web</span><span class="w">         </span><span class="p">,</span><span class="w"> </span><span class="c1">// Write Enable/Read Enable, low active</span>
+<span class="n">oe</span><span class="w">            </span><span class="c1">// Output Enable</span>
+<span class="p">);</span><span class="w"> </span>
+
+<span class="k">localparam</span><span class="w"> </span><span class="n">RAM_DEPTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ADDR_WIDTH</span><span class="p">;</span>
+
+<span class="c1">//--------------Input Ports----------------------- </span>
+<span class="k">input</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="n">ADDR_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">address</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="n">cs</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="n">web</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="n">oe</span><span class="p">;</span><span class="w"> </span>
+
+<span class="c1">//--------------Inout Ports----------------------- </span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">  </span><span class="n">d</span><span class="p">;</span>
+<span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">  </span><span class="n">q</span><span class="p">;</span>
+
+<span class="c1">//--------------Internal variables---------------- </span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">data_out</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">mem</span><span class="w"> </span><span class="p">[</span><span class="mh">0</span><span class="o">:</span><span class="n">RAM_DEPTH</span><span class="o">-</span><span class="mh">1</span><span class="p">];</span>
+
+<span class="c1">//--------------Core Function--------------------- </span>
+<span class="c1">// Tri-State Buffer control </span>
+<span class="c1">// output : When web = 1, oe = 1, cs = 1</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">cs</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">oe</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">web</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">data_out</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">&#39;</span><span class="n">bz</span><span class="p">;</span><span class="w"> </span>
+
+<span class="c1">// Memory Write Block </span>
+<span class="c1">// Write Operation : When web = 0, cs = 1</span>
+<span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span>
+<span class="k">begin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MEM_WRITE</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">cs</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">~</span><span class="n">web</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">       </span><span class="n">mem</span><span class="p">[</span><span class="n">address</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
+<span class="w">   </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1">// Memory Read Block </span>
+<span class="c1">// Read Operation : When web = 1, oe = 1, cs = 1</span>
+<span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span>
+<span class="k">begin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MEM_READ</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cs</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">oe</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">         </span><span class="n">data_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mem</span><span class="p">[</span><span class="n">address</span><span class="p">];</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+</section>
+<section id="ram-with-async-read">
+<h3><em>3、RAM with async read</em><a class="headerlink" href="#ram-with-async-read" title="Link to this heading"></a></h3>
+<p>一般的RAM都是手动做的，这里我们给出的只是<strong>behavioral model</strong>，也就是“行为模型”（端口、行为和正常的一模一样，但它只是基于Verilog的行为描述）：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">ram_ar</span><span class="w"> </span><span class="p">#</span><span class="w"> </span>
+<span class="p">(</span><span class="k">parameter</span><span class="w"> </span><span class="n">DATA_WIDTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="p">,</span><span class="w"> </span><span class="n">ADDR_WIDTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="p">)</span>
+<span class="p">(</span>
+<span class="n">clk</span><span class="w">         </span><span class="p">,</span><span class="w"> </span><span class="c1">// Clock Input</span>
+<span class="n">address</span><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="c1">// Address Input</span>
+<span class="n">d</span><span class="w">           </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data input</span>
+<span class="n">q</span><span class="w">           </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data output</span>
+<span class="n">cs</span><span class="w">          </span><span class="p">,</span><span class="w"> </span><span class="c1">// Chip Select</span>
+<span class="n">web</span><span class="w">         </span><span class="p">,</span><span class="w"> </span><span class="c1">// Write Enable/Read Enable, low active</span>
+<span class="n">oe</span><span class="w">            </span><span class="c1">// Output Enable</span>
+<span class="p">);</span><span class="w"> </span>
+
+<span class="k">localparam</span><span class="w"> </span><span class="n">RAM_DEPTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ADDR_WIDTH</span><span class="p">;</span>
+
+<span class="c1">//--------------Input Ports----------------------- </span>
+<span class="k">input</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="n">ADDR_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">address</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="n">cs</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="n">web</span><span class="p">;</span>
+<span class="k">input</span><span class="w"> </span><span class="n">oe</span><span class="p">;</span><span class="w"> </span>
+
+<span class="c1">//--------------Inout Ports----------------------- </span>
+<span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">  </span><span class="n">d</span><span class="p">;</span>
+<span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">  </span><span class="n">q</span><span class="p">;</span>
+
+<span class="c1">//--------------Internal variables---------------- </span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">data_out</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="n">DATA_WIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">mem</span><span class="w"> </span><span class="p">[</span><span class="mh">0</span><span class="o">:</span><span class="n">RAM_DEPTH</span><span class="o">-</span><span class="mh">1</span><span class="p">];</span>
+
+<span class="c1">//--------------Core Function--------------------- </span>
+<span class="c1">// Tri-State Buffer control </span>
+<span class="c1">// output : When web = 1, oe = 1, cs = 1</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">cs</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">oe</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">web</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">data_out</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">&#39;</span><span class="n">bz</span><span class="p">;</span><span class="w"> </span>
+
+<span class="c1">// Memory Write Block </span>
+<span class="c1">// Write Operation : When web = 0, cs = 1</span>
+<span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span>
+<span class="k">begin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MEM_WRITE</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">cs</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">~</span><span class="n">web</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">       </span><span class="n">mem</span><span class="p">[</span><span class="n">address</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
+<span class="w">   </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1">// Memory Read Block </span>
+<span class="c1">// Read Operation : When web = 1, oe = 1, cs = 1</span>
+<span class="k">always</span><span class="w"> </span><span class="p">@</span><span class="w"> </span><span class="p">(</span><span class="n">address</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">cs</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">oe</span><span class="p">)</span>
+<span class="k">begin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MEM_READ</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cs</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">oe</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">         </span><span class="n">data_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mem</span><span class="p">[</span><span class="n">address</span><span class="p">];</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+</section>
+<section id="testbench">
+<h3><em>4、Testbench</em><a class="headerlink" href="#testbench" title="Link to this heading"></a></h3>
+<p>我们用同一套testbench测试上述两种RAM：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
+<span class="k">module</span><span class="w"> </span><span class="n">tb</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">addr</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">cs</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">web</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">oe</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">q</span><span class="p">;</span>
+<span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;wave.vcd&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">$dumpvars</span><span class="p">(</span><span class="mh">0</span><span class="p">);</span>
+<span class="w">    </span><span class="nb">$monitor</span><span class="p">(</span><span class="s">&quot;time=%4t, clk=%1b, web=%1b, d=%2h, q=%2h&quot;</span><span class="p">,</span><span class="nb">$time</span><span class="p">,</span><span class="n">clk</span><span class="p">,</span><span class="n">web</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">q</span><span class="p">);</span>
+<span class="k">end</span>
+
+<span class="k">initial</span>
+<span class="k">begin</span>
+<span class="w">    </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">forever</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clk</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span>
+<span class="k">begin</span>
+<span class="w">    </span><span class="n">cs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">oe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// test write</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="mh">1</span><span class="o">&lt;&lt;</span><span class="mh">4</span><span class="p">);</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="p">#</span><span class="mh">2</span><span class="w"> </span><span class="n">web</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">        </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="c1">// test read</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="mh">1</span><span class="o">&lt;&lt;</span><span class="mh">4</span><span class="p">);</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="p">#</span><span class="mh">2</span><span class="w"> </span><span class="n">web</span><span class="o">=</span><span class="mh">1</span><span class="p">;</span>
+<span class="w">        </span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">        </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">$random</span><span class="p">;</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="c1">//这里需要改成想要实例化的ram_ar或者ram_sr</span>
+<span class="n">ram</span><span class="w"> </span><span class="p">#(.</span><span class="n">DATA_WIDTH</span><span class="p">(</span><span class="mh">16</span><span class="p">),</span><span class="w"> </span><span class="p">.</span><span class="n">ADDR_WIDTH</span><span class="p">(</span><span class="mh">8</span><span class="p">))</span><span class="w"> </span><span class="n">u0</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">address</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">d</span><span class="w">  </span><span class="p">(</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">q</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">cs</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">cs</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">web</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">,.</span><span class="n">oe</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">oe</span><span class="w"> </span><span class="p">)</span>
+<span class="p">);</span><span class="w"> </span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>然后在terminal里用iverilog+gtkwave来验证读、写功能：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>iverilog<span class="w"> </span>-o<span class="w"> </span>wave<span class="w"> </span>a.v
+vvp<span class="w"> </span>-n<span class="w"> </span>wave
+gtkwave<span class="w"> </span>wave.vcd
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="id2">
+<h2>练习<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3><em>基础概念分辨</em><a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>[问题1]</strong> 请设计一个testbench测试一下上述regfil的设计，请提交波形图并用箭头标出相关的功能；另外，请总结regfile与RAM的主要区别。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>[问题2]</strong> 请结合波形图，说明async read与sync read的区别。</p>
+</div>
+</section>
+<section id="ramfifo">
+<h3><em>基于RAM的FIFO</em><a class="headerlink" href="#ramfifo" title="Link to this heading"></a></h3>
+<p>FIFO是first in first out的首字母缩写，</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>[问题3]</strong> 请基于RAM with sync read（实例化）包装出一个新的FIFO memory出来,并设计testbench测试一下，提交波形图截图并标记说明其功能。</p>
+</div>
+<p>FIFO是一种这样的功能模块：
+<img alt="FIFO" src="_images/fifo.png" /></p>
+<p>请使用下方module商品定义：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">fifo</span><span class="w"> </span><span class="p">(</span>
+<span class="k">input</span><span class="w">   </span><span class="n">clk</span><span class="w">             </span><span class="p">,</span><span class="w"> </span><span class="c1">// Clock input</span>
+<span class="k">input</span><span class="w">   </span><span class="n">rstb</span><span class="w">            </span><span class="p">,</span><span class="w"> </span><span class="c1">// Reset all function, low active</span>
+<span class="k">input</span><span class="w">   </span><span class="n">rd</span><span class="w">              </span><span class="p">,</span><span class="w"> </span><span class="c1">// Pop one datum out</span>
+<span class="k">input</span><span class="w">   </span><span class="n">wr</span><span class="w">              </span><span class="p">,</span><span class="w"> </span><span class="c1">// Push one datum in</span>
+<span class="k">input</span><span class="w">   </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">data_in</span><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data input port</span>
+<span class="k">output</span><span class="w">  </span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">data_out</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="c1">// Data output port</span>
+<span class="k">output</span><span class="w">  </span><span class="n">empty</span><span class="w">           </span><span class="p">,</span><span class="w"> </span><span class="c1">// FIFO empty indicator, high active</span>
+<span class="k">output</span><span class="w">  </span><span class="n">full</span><span class="w">              </span><span class="c1">// FIFO full indicator, low active</span>
+<span class="p">);</span><span class="w">  </span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 

@@ -49,7 +49,24 @@
 <li class="toctree-l1"><a class="reference internal" href="lab2.html">实验2、时序逻辑</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab3.html">实验3、Verilog里费解的概念</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab4.html">实验4、有限状态机</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">实验5、传输接口UART</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验5、传输接口UART</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">教程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">第一步：了解UART协议</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uart-txrx-interfaces">第二步：读一下UART TX与RX interfaces（接口）数字电路的代码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uart-tx">第三步：写一个不知疲倦发送”6”的UART TX设计</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#interface">–特别注意interface用法–</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">第四步：在仿真前能读懂示例程序在干啥</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fpgapc666">–我们可以先用实际FPGA与PC试一下“不停发送666”程序的通信–</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">–最终再试着不仿真的情况读一下下面的代码–</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">练习</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab8.html">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
@@ -81,7 +98,455 @@
              
   <section id="uart">
 <h1>实验5、传输接口UART<a class="headerlink" href="#uart" title="Link to this heading"></a></h1>
-<p>待添加</p>
+<section id="id1">
+<h2>教程<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>我们的目标是熟悉UART的设计与应用</p>
+<section id="id2">
+<h3>第一步：了解UART协议<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>推荐教程：<a class="reference external" href="https://learn.sparkfun.com/tutorials/serial-communication/all">https://learn.sparkfun.com/tutorials/serial-communication/all</a></p>
+</section>
+<section id="uart-txrx-interfaces">
+<h3>第二步：读一下UART TX与RX interfaces（接口）数字电路的代码<a class="headerlink" href="#uart-txrx-interfaces" title="Link to this heading"></a></h3>
+<p>来自Alinx的UART接口实现：
+<a class="reference download internal" download="" href="_downloads/72da80c35cd47eea8b2bb28e96af8f12/uart.v"><span class="xref download myst">uart.v</span></a></p>
+<p>它本质上是一个状态机，结合第一步的协议“规定”，看一下它的状态是怎么跳转的即容易读懂。</p>
+</section>
+<section id="uart-tx">
+<h3>第三步：写一个不知疲倦发送”6”的UART TX设计<a class="headerlink" href="#uart-tx" title="Link to this heading"></a></h3>
+<p>了解了UART的基本原理后，我们试着写一个不停发送”6”(当然是ASCII码啦)的数字电路模块，然后用PC来接收一下。</p>
+<section id="interface">
+<h4>–特别注意interface用法–<a class="headerlink" href="#interface" title="Link to this heading"></a></h4>
+<p>TX pin说明：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal</p></th>
+<th class="head"><p>Direction</p></th>
+<th class="head"><p>Bit Width</p></th>
+<th class="head"><p>Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>clk</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>system clock</p></td>
+</tr>
+<tr class="row-odd"><td><p>rst_n</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>async reset, low active</p></td>
+</tr>
+<tr class="row-even"><td><p>tx_data</p></td>
+<td><p>I</p></td>
+<td><p>8</p></td>
+<td><p>data to send (1byte)</p></td>
+</tr>
+<tr class="row-odd"><td><p>tx_data_valid</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>ok to send? high active</p></td>
+</tr>
+<tr class="row-even"><td><p>tx_data_ready</p></td>
+<td><p>O</p></td>
+<td><p>1</p></td>
+<td><p>tx interface status. 1: ready to send; 0: busy</p></td>
+</tr>
+<tr class="row-odd"><td><p>tx_pin</p></td>
+<td><p>O</p></td>
+<td><p>1</p></td>
+<td><p>tx pin</p></td>
+</tr>
+</tbody>
+</table>
+<p>RX pin说明：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal</p></th>
+<th class="head"><p>Direction</p></th>
+<th class="head"><p>Bit Width</p></th>
+<th class="head"><p>Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>clk</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>system clock</p></td>
+</tr>
+<tr class="row-odd"><td><p>rst_n</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>async reset, low active</p></td>
+</tr>
+<tr class="row-even"><td><p>rx_data</p></td>
+<td><p>O</p></td>
+<td><p>8</p></td>
+<td><p>received data (1byte)</p></td>
+</tr>
+<tr class="row-odd"><td><p>rx_data_valid</p></td>
+<td><p>O</p></td>
+<td><p>1</p></td>
+<td><p>received done? high active</p></td>
+</tr>
+<tr class="row-even"><td><p>rx_data_ready</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>ready to receive? high active</p></td>
+</tr>
+<tr class="row-odd"><td><p>rx_pin</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>rx pin</p></td>
+</tr>
+</tbody>
+</table>
+<p>需要检查的端口：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal</p></th>
+<th class="head"><p>Direction</p></th>
+<th class="head"><p>Bit Width</p></th>
+<th class="head"><p>Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tx_data_ready</p></td>
+<td><p>O</p></td>
+<td><p>1</p></td>
+<td><p>tx interface status. 1: ready to send; 0: busy</p></td>
+</tr>
+<tr class="row-odd"><td><p>rx_data_valid</p></td>
+<td><p>O</p></td>
+<td><p>1</p></td>
+<td><p>received done? high active</p></td>
+</tr>
+</tbody>
+</table>
+<p>需要Interface用户控制的信号：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal</p></th>
+<th class="head"><p>Direction</p></th>
+<th class="head"><p>Bit Width</p></th>
+<th class="head"><p>Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tx_data_valid</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>ok to send? high active</p></td>
+</tr>
+<tr class="row-odd"><td><p>rx_data_ready</p></td>
+<td><p>I</p></td>
+<td><p>1</p></td>
+<td><p>ready to receive? high active</p></td>
+</tr>
+</tbody>
+</table>
+<p>我们先写一个数字电路模块来利用UART TX interface，在reset之后，把”6”的码字不停地扔向tx_data：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">test1</span>
+<span class="p">(</span>
+<span class="k">input</span><span class="w">	</span><span class="n">sys_clk</span><span class="p">,</span><span class="w">       </span><span class="c1">//system clock 50Mhz on board</span>
+<span class="k">input</span><span class="w">	</span><span class="n">rstb</span><span class="p">,</span><span class="w">        </span><span class="c1">//reset ,low active</span>
+<span class="k">output</span><span class="w">	</span><span class="n">uart_tx</span><span class="w">      </span><span class="c1">//fpga send data</span>
+<span class="p">);</span>
+
+<span class="k">parameter</span><span class="w"> </span><span class="n">CLK_FRE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">50</span><span class="p">;</span><span class="c1">//Mhz</span>
+<span class="k">localparam</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">STATE_RESET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">,</span><span class="w"> </span><span class="n">STATE_SEND</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">3</span><span class="p">;</span>
+<span class="c1">// communication interface</span>
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> 	</span><span class="n">tx_data</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> 		</span><span class="n">tx_data_valid</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> 	</span><span class="n">state</span><span class="p">;</span>
+
+<span class="c1">// State transfer</span>
+<span class="k">always</span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">sys_clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">negedge</span><span class="w"> </span><span class="n">rstb</span><span class="p">)</span>
+<span class="k">begin</span>
+<span class="w">	</span><span class="k">if</span><span class="p">(</span><span class="o">~</span><span class="n">rstb</span><span class="p">)</span>
+<span class="w">	</span><span class="k">begin</span>
+<span class="w">		</span><span class="n">tx_data</span><span class="w"> 		</span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">		</span><span class="n">tx_data_valid</span><span class="w"> 	</span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">		</span><span class="n">state</span><span class="w"> 			</span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_RESET</span><span class="p">;</span>
+<span class="w">	</span><span class="k">end</span>
+<span class="w">	</span><span class="k">else</span>
+<span class="w">		</span><span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">			</span><span class="nl">STATE_SEND:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">				</span><span class="k">if</span><span class="p">(</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tx_data_ready</span><span class="p">)</span><span class="c1">//last byte sent is complete</span>
+<span class="w">				</span><span class="k">begin</span>
+<span class="w">					</span><span class="c1">// &quot;6&quot; is 8&#39;b00110110;</span>
+<span class="w">					</span><span class="c1">// send from LSB to MSB: 01101100</span>
+<span class="w">					</span><span class="n">tx_data</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;6&quot;</span><span class="p">;</span>
+<span class="w">					</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">				</span><span class="k">end</span>
+<span class="w">				</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="o">~</span><span class="n">tx_data_valid</span><span class="p">)</span>
+<span class="w">				</span><span class="k">begin</span>
+<span class="w">					</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">				</span><span class="k">end</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">			</span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">begin</span><span class="c1">//STATE_RESET</span>
+<span class="w">				</span><span class="n">state</span><span class="w"> 	</span><span class="o">&lt;=</span><span class="w"> </span><span class="n">STATE_SEND</span><span class="p">;</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">		</span><span class="k">endcase</span>
+<span class="k">end</span>
+
+<span class="c1">// UART Interface</span>
+<span class="n">uart_tx</span><span class="w"> </span><span class="p">#</span>
+<span class="p">(</span>
+<span class="p">.</span><span class="n">CLK_FRE</span><span class="p">(</span><span class="n">CLK_FRE</span><span class="p">),</span>
+<span class="p">.</span><span class="n">BAUD_RATE</span><span class="p">(</span><span class="mh">115200</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="n">uart_tx_inst</span>
+<span class="p">(</span>
+<span class="p">.</span><span class="n">clk</span><span class="w"> 			</span><span class="p">(</span><span class="n">sys_clk</span><span class="p">),</span>
+<span class="p">.</span><span class="n">rst_n</span><span class="w"> 			</span><span class="p">(</span><span class="n">rstb</span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_data</span><span class="w">  		</span><span class="p">(</span><span class="n">tx_data</span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_data_valid</span><span class="w">	</span><span class="p">(</span><span class="n">tx_data_valid</span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_data_ready</span><span class="w">	</span><span class="p">(</span><span class="n">tx_data_ready</span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_pin</span><span class="w"> 		</span><span class="p">(</span><span class="n">uart_tx</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>可以写一个testbench来仿真验证一下：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
+<span class="no">`include</span><span class="w"> </span><span class="s">&quot;uart.v&quot;</span>
+<span class="k">module</span><span class="w"> </span><span class="n">test_top</span><span class="p">;</span>
+
+<span class="kt">reg</span><span class="w"> </span><span class="n">sys_clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">rstb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w"> </span><span class="n">uart_rx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w"> </span><span class="n">uart_tx</span><span class="p">;</span>
+
+<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">sys_clk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">sys_clk</span><span class="p">;</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">	</span><span class="p">#</span><span class="mh">2</span><span class="w"> </span><span class="n">rstb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">	</span><span class="p">#</span><span class="mh">100000</span><span class="w"> </span><span class="nb">$finish</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">	</span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;wave.vcd&quot;</span><span class="p">);</span>
+<span class="w">	</span><span class="n">$dumpvars</span><span class="p">(</span><span class="mh">0</span><span class="p">,</span><span class="n">test_top</span><span class="p">);</span>
+<span class="k">end</span>
+
+<span class="n">test1</span><span class="w"> </span><span class="n">u1</span><span class="p">(</span>
+<span class="p">.</span><span class="n">sys_clk</span><span class="p">(</span><span class="n">sys_clk</span><span class="p">),</span>
+<span class="p">.</span><span class="n">rstb</span><span class="p">(</span><span class="n">rstb</span><span class="p">),</span>
+<span class="p">.</span><span class="n">uart_rx</span><span class="p">(</span><span class="n">uart_rx</span><span class="p">),</span>
+<span class="p">.</span><span class="n">uart_tx</span><span class="p">(</span><span class="n">uart_tx</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<p>不过需要注意的是，UART的波特率设为115200（意思是TX RX的变化速度为115200 bps, bit per second），而uart interface (tx或rx)都是用50MHz的时钟去采样的，所以每bit UART tx_pin或rx_pin的变化都需要 50M/115200≈435个周期，所以仿真的时候一定多仿一会，比如放十万个cycle <code class="docutils literal notranslate"><span class="pre">#100000</span> <span class="pre">$finish</span></code>。</p>
+<p>带标记的结果如下：</p>
+<p><img alt="screen_shot_results" src="_images/screenshot_6.png" /></p>
+<p>确实不停地在发送字符“6”；上图中标记开始的“0”和结束的“1”分别为UART协议(protocol)中的起始位与结束位，回去看一下<a class="reference download internal" download="" href="_downloads/72da80c35cd47eea8b2bb28e96af8f12/uart.v"><span class="xref download myst">uart.v</span></a>中的interface设计第150行：发送最后一位对应的state叫S_STOP，对应的输出tx_reg=1。</p>
+<p>其实还有其它UART变种协议，会在data bit与stop bit中间发送1bit的(奇偶)校验bit，但是我们这里的设计<a class="reference download internal" download="" href="_downloads/72da80c35cd47eea8b2bb28e96af8f12/uart.v"><span class="xref download myst">uart.v</span></a>并没有把检验位设计进去。</p>
+</section>
+</section>
+<section id="id3">
+<h3>第四步：在仿真前能读懂示例程序在干啥<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Alinx的官方教程提供了一个示例教程：<a class="reference download internal" download="" href="_downloads/5362aa4b28767a4454d5d38c310b2765/04.%E4%B8%B2%E5%8F%A3%E6%94%B6%E5%8F%91%E5%AE%9E%E9%AA%8C.pdf"><span class="xref download myst">串口收发实验</span></a>。</p>
+<section id="fpgapc666">
+<h4>–我们可以先用实际FPGA与PC试一下“不停发送666”程序的通信–<a class="headerlink" href="#fpgapc666" title="Link to this heading"></a></h4>
+<p>根据上面的<em>串口收发实验</em>示例教程，试着连一下我们自己的Verilog数字电路设计：</p>
+<ul class="simple">
+<li><p>FPGA端：通过vivado把上面的test1 module烧到我们的FPGA中去，记得绑定IO；</p></li>
+<li><p>PC端：可以用python提供的包。</p></li>
+</ul>
+</section>
+<section id="id4">
+<h4>–最终再试着不仿真的情况读一下下面的代码–<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">uart_test</span>
+<span class="p">(</span>
+<span class="k">input</span><span class="w">                           </span><span class="n">sys_clk</span><span class="p">,</span><span class="w">       </span><span class="c1">//system clock 50Mhz on board</span>
+<span class="k">input</span><span class="w">                           </span><span class="n">rst_n</span><span class="p">,</span><span class="w">        </span><span class="c1">//reset ,low active</span>
+<span class="k">input</span><span class="w">                           </span><span class="n">uart_rx</span><span class="p">,</span><span class="w">      </span><span class="c1">//fpga receive data</span>
+<span class="k">output</span><span class="w">                          </span><span class="n">uart_tx</span><span class="w">      </span><span class="c1">//fpga send data</span>
+<span class="p">);</span>
+
+<span class="k">parameter</span><span class="w">                       </span><span class="n">CLK_FRE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">50</span><span class="p">;</span><span class="c1">//Mhz</span>
+<span class="k">localparam</span><span class="w">                       </span><span class="n">IDLE</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">localparam</span><span class="w">                       </span><span class="n">SEND</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mh">1</span><span class="p">;</span><span class="w">   </span><span class="c1">//send HELLO ALINX\r\n</span>
+<span class="k">localparam</span><span class="w">                       </span><span class="n">WAIT</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mh">2</span><span class="p">;</span><span class="w">   </span><span class="c1">//wait 1 second and send uart received data</span>
+<span class="kt">reg</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">                         </span><span class="n">tx_data</span><span class="p">;</span>
+<span class="kt">reg</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">                         </span><span class="n">tx_str</span><span class="p">;</span>
+<span class="kt">reg</span><span class="w">                              </span><span class="n">tx_data_valid</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w">                             </span><span class="n">tx_data_ready</span><span class="p">;</span>
+<span class="kt">reg</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">                         </span><span class="n">tx_cnt</span><span class="p">;</span>
+<span class="kt">wire</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">                        </span><span class="n">rx_data</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w">                             </span><span class="n">rx_data_valid</span><span class="p">;</span>
+<span class="kt">wire</span><span class="w">                             </span><span class="n">rx_data_ready</span><span class="p">;</span>
+<span class="kt">reg</span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">                        </span><span class="n">wait_cnt</span><span class="p">;</span>
+<span class="kt">reg</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">                         </span><span class="n">state</span><span class="p">;</span>
+
+<span class="k">assign</span><span class="w"> </span><span class="n">rx_data_ready</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span><span class="c1">//always can receive data,</span>
+<span class="c1">//if HELLO ALINX\r\n is being sent, the received data is discarded</span>
+<span class="cm">/*************************************************************************</span>
+<span class="cm">1 second sends a packet HELLO ALINX\r\n , FPGA has been receiving state</span>
+<span class="cm">****************************************************************************/</span>
+<span class="k">always</span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">sys_clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">negedge</span><span class="w"> </span><span class="n">rst_n</span><span class="p">)</span>
+<span class="k">begin</span>
+<span class="w">	</span><span class="k">if</span><span class="p">(</span><span class="n">rst_n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">)</span>
+<span class="w">	</span><span class="k">begin</span>
+<span class="w">		</span><span class="n">wait_cnt</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">		</span><span class="n">tx_data</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">		</span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">IDLE</span><span class="p">;</span>
+<span class="w">		</span><span class="n">tx_cnt</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">		</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">	</span><span class="k">end</span>
+<span class="w">	</span><span class="k">else</span>
+<span class="w">	</span><span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">		</span><span class="nl">IDLE:</span>
+<span class="w">			</span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">SEND</span><span class="p">;</span>
+<span class="w">		</span><span class="nl">SEND:</span>
+<span class="w">		</span><span class="k">begin</span>
+<span class="w">			</span><span class="n">wait_cnt</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">			</span><span class="n">tx_data</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">tx_str</span><span class="p">;</span>
+
+<span class="w">			</span><span class="k">if</span><span class="p">(</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tx_data_ready</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tx_cnt</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d12</span><span class="p">)</span><span class="c1">//Send 12 bytes data</span>
+<span class="w">			</span><span class="k">begin</span>
+<span class="w">				</span><span class="n">tx_cnt</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">tx_cnt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d1</span><span class="p">;</span><span class="w"> </span><span class="c1">//Send data counter</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">			</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tx_data_ready</span><span class="p">)</span><span class="c1">//last byte sent is complete</span>
+<span class="w">			</span><span class="k">begin</span>
+<span class="w">				</span><span class="n">tx_cnt</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">				</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">				</span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">WAIT</span><span class="p">;</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">			</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="o">~</span><span class="n">tx_data_valid</span><span class="p">)</span>
+<span class="w">			</span><span class="k">begin</span>
+<span class="w">				</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">		</span><span class="k">end</span>
+<span class="w">		</span><span class="nl">WAIT:</span>
+<span class="w">		</span><span class="k">begin</span>
+<span class="w">			</span><span class="n">wait_cnt</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">wait_cnt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d1</span><span class="p">;</span>
+
+<span class="w">			</span><span class="k">if</span><span class="p">(</span><span class="n">rx_data_valid</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">)</span>
+<span class="w">			</span><span class="k">begin</span>
+<span class="w">				</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">				</span><span class="n">tx_data</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">rx_data</span><span class="p">;</span><span class="w">   </span><span class="c1">// send uart received data</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">			</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tx_data_ready</span><span class="p">)</span>
+<span class="w">			</span><span class="k">begin</span>
+<span class="w">				</span><span class="n">tx_data_valid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">			</span><span class="k">end</span>
+<span class="w">			</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">wait_cnt</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">CLK_FRE</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mh">1000000</span><span class="p">)</span><span class="w"> </span><span class="c1">// wait for 1 second</span>
+<span class="w">				</span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">SEND</span><span class="p">;</span>
+<span class="w">		</span><span class="k">end</span>
+<span class="w">		</span><span class="k">default</span><span class="o">:</span>
+<span class="w">			</span><span class="n">state</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">IDLE</span><span class="p">;</span>
+<span class="w">	</span><span class="k">endcase</span>
+<span class="k">end</span>
+<span class="cm">/*************************************************************************</span>
+<span class="cm">combinational logic  Send &quot;HELLO ALINX\r\n&quot;</span>
+<span class="cm">****************************************************************************/</span>
+<span class="k">always</span><span class="p">@(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">begin</span>
+<span class="w">	</span><span class="k">case</span><span class="p">(</span><span class="n">tx_cnt</span><span class="p">)</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d0</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;H&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d1</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d2</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d3</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d4</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;O&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d5</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d6</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d7</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d8</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;I&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d9</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;N&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d10</span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;X&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d11</span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="mh">8</span><span class="mi">&#39;d12</span><span class="o">:</span><span class="w">  </span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">		</span><span class="k">default</span><span class="o">:</span><span class="n">tx_str</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">8</span><span class="mi">&#39;d0</span><span class="p">;</span>
+<span class="w">	</span><span class="k">endcase</span>
+<span class="k">end</span>
+<span class="cm">/***************************************************************************</span>
+<span class="cm">calling uart_tx module and uart_rx module</span>
+<span class="cm">****************************************************************************/</span>
+<span class="n">uart_rx</span><span class="p">#</span>
+<span class="p">(</span>
+<span class="p">.</span><span class="n">CLK_FRE</span><span class="p">(</span><span class="n">CLK_FRE</span><span class="p">),</span>
+<span class="p">.</span><span class="n">BAUD_RATE</span><span class="p">(</span><span class="mh">115200</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="n">uart_rx_inst</span>
+<span class="p">(</span>
+<span class="p">.</span><span class="n">clk</span><span class="w">                        </span><span class="p">(</span><span class="n">sys_clk</span><span class="w">                  </span><span class="p">),</span>
+<span class="p">.</span><span class="n">rst_n</span><span class="w">                      </span><span class="p">(</span><span class="n">rst_n</span><span class="w">                    </span><span class="p">),</span>
+<span class="p">.</span><span class="n">rx_data</span><span class="w">                    </span><span class="p">(</span><span class="n">rx_data</span><span class="w">                  </span><span class="p">),</span>
+<span class="p">.</span><span class="n">rx_data_valid</span><span class="w">              </span><span class="p">(</span><span class="n">rx_data_valid</span><span class="w">            </span><span class="p">),</span>
+<span class="p">.</span><span class="n">rx_data_ready</span><span class="w">              </span><span class="p">(</span><span class="n">rx_data_ready</span><span class="w">            </span><span class="p">),</span>
+<span class="p">.</span><span class="n">rx_pin</span><span class="w">                     </span><span class="p">(</span><span class="n">uart_rx</span><span class="w">                  </span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="n">uart_tx</span><span class="p">#</span>
+<span class="p">(</span>
+<span class="p">.</span><span class="n">CLK_FRE</span><span class="p">(</span><span class="n">CLK_FRE</span><span class="p">),</span>
+<span class="p">.</span><span class="n">BAUD_RATE</span><span class="p">(</span><span class="mh">115200</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="n">uart_tx_inst</span>
+<span class="p">(</span>
+<span class="p">.</span><span class="n">clk</span><span class="w">                        </span><span class="p">(</span><span class="n">sys_clk</span><span class="w">                  </span><span class="p">),</span>
+<span class="p">.</span><span class="n">rst_n</span><span class="w">                      </span><span class="p">(</span><span class="n">rst_n</span><span class="w">                    </span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_data</span><span class="w">                    </span><span class="p">(</span><span class="n">tx_data</span><span class="w">                  </span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_data_valid</span><span class="w">              </span><span class="p">(</span><span class="n">tx_data_valid</span><span class="w">            </span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_data_ready</span><span class="w">              </span><span class="p">(</span><span class="n">tx_data_ready</span><span class="w">            </span><span class="p">),</span>
+<span class="p">.</span><span class="n">tx_pin</span><span class="w">                     </span><span class="p">(</span><span class="n">uart_tx</span><span class="w">                  </span><span class="p">)</span>
+<span class="p">);</span>
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="id5">
+<h2>练习<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<p>我们来设计一个用FPGA（加速）计算向量-矩阵乘法的数字系统。</p>
+<p>整体工作流程为：</p>
+<ol class="arabic simple">
+<li><p>PC端（上位机）通过UART发送待计算数据到FPGA</p>
+<ul class="simple">
+<li><p>3×2矩阵<strong>W</strong></p></li>
+<li><p>1×3的向量<strong>X</strong></p></li>
+</ul>
+</li>
+<li><p>FPGA进行计算<strong>Y</strong>=<strong>X·W</strong>，结果维度应为1×2</p></li>
+<li><p>FPGA通过UART发送计算结果<strong>Y</strong>至上位机，并在显示器上打印出计算结果。</p></li>
+</ol>
+<p>注：本练习中涉及到的每个标量均为32bit unsigned integer，不考虑溢出。</p>
+<p>提示：
+第2步中的加速计算可直接使用下方模块：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">VMM</span><span class="p">(</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">x0</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">x1</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">x2</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">w00</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">w01</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">w10</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">w11</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">w20</span><span class="p">,</span>
+<span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">w21</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">y0</span><span class="p">,</span>
+<span class="w">    </span><span class="k">output</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">y1</span>
+<span class="p">);</span>
+
+<span class="k">assign</span><span class="w"> </span><span class="n">y0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w00</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w20</span><span class="p">;</span>
+<span class="k">assign</span><span class="w"> </span><span class="n">y1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w01</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w11</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w21</span><span class="p">;</span>
+
+<span class="k">endmodule</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>[问题1]</strong>
+完成述的FPGA代码与PC端代码（建议Python，其它语言亦可）。</p>
+<p>请于实验报告中展示相关结果（包括但不限于FPGA与PC连接的工作照片、Verilog仿真波形图、PC端输入与输出的结果）。</p>
+<p>请一同上传FPGA端与PC端源代码。</p>
+</div>
+</section>
 </section>
 
 
