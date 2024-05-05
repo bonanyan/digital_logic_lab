@@ -194,7 +194,7 @@ set_property PACKAGE_PIN G16 [get_ports uart_tx]
 
 在将上面的FPGA设计程序烧录到FPGA之后，连接A7035B开发板上的UART口到PC的USB端：
 
-![connection_picture](screenshot_7)
+![connection_picture](_static/assets/screenshot_7.jpg)
 
 自己写个简单的接收程序：
 ```python
@@ -208,7 +208,7 @@ print(ser.read(3)) #收3个byte，理论上应该会出现“666”
 
 成功的话结果应该为：
 
-![connection_picture](screenshot_8)
+![connection_picture](_static/assets/screenshot_8.png)
 
 这样我们就先完成一次简单数字芯片与上位机之间的通信对接！🛰
 

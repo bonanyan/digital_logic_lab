@@ -382,7 +382,7 @@ create_clock<span class="w"> </span><span class="o">-</span>period<span class="w
 <h5>PC端<a class="headerlink" href="#pc" title="Link to this heading"></a></h5>
 <p>可以用python提供的包 <a class="reference external" href="https://pyserial.readthedocs.io/en/latest/shortintro.html">pyserial</a>，注意使用之前需要先安装 (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pyserial</span></code>)，具体的安装流程见：<a class="reference external" href="https://pyserial.readthedocs.io/en/latest/pyserial.html#installation">here</a></p>
 <p>在将上面的FPGA设计程序烧录到FPGA之后，连接A7035B开发板上的UART口到PC的USB端：</p>
-<p><img alt="connection_picture" src="screenshot_7" /></p>
+<p><img alt="connection_picture" src="_images/screenshot_7.jpg" /></p>
 <p>自己写个简单的接收程序：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">serial</span>
 <span class="n">ser</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="s1">&#39;/dev/ttyUSB0&#39;</span><span class="p">)</span>
@@ -393,7 +393,7 @@ create_clock<span class="w"> </span><span class="o">-</span>period<span class="w
 </div>
 <p>注意：不同操作系统对于接口的命令规则不太一样，windows的话应该类似于<code class="docutils literal notranslate"><span class="pre">COM1</span></code>、<code class="docutils literal notranslate"><span class="pre">COM2</span></code>这种，需要去设备管理器去找对应的接口；Linux/MACOS的应该类似于上面的<code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code>或者<code class="docutils literal notranslate"><span class="pre">/dev/tty.usbserial0</span></code>.</p>
 <p>成功的话结果应该为：</p>
-<p><img alt="connection_picture" src="screenshot_8" /></p>
+<p><img alt="connection_picture" src="_images/screenshot_8.png" /></p>
 <p>这样我们就先完成一次简单数字芯片与上位机之间的通信对接！🛰</p>
 </section>
 </section>
