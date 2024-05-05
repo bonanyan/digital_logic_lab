@@ -352,10 +352,50 @@
 <section id="fpgapc666">
 <h4>–我们可以先用实际FPGA与PC试一下“不停发送666”程序的通信–<a class="headerlink" href="#fpgapc666" title="Link to this heading"></a></h4>
 <p>根据上面的<em>串口收发实验</em>示例教程，试着连一下我们自己的Verilog数字电路设计：</p>
-<ul class="simple">
-<li><p>FPGA端：通过vivado把上面的test1 module烧到我们的FPGA中去，记得绑定IO；</p></li>
-<li><p>PC端：可以用python提供的包。</p></li>
-</ul>
+<section id="fpga">
+<h5>FPGA端:<a class="headerlink" href="#fpga" title="Link to this heading"></a></h5>
+<p>通过vivado把上面的test1 module烧到我们的FPGA中去，记得绑定IO；</p>
+<p>FPGA的constraint:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">set_property</span><span class="w"> </span>CFGBVS<span class="w"> </span>VCCO<span class="w"> </span><span class="k">[</span><span class="nv">current_design</span><span class="k">]</span>
+<span class="nv">set_property</span><span class="w"> </span>CONFIG_VOLTAGE<span class="w"> </span><span class="mf">3.3</span><span class="w"> </span><span class="k">[</span><span class="nv">current_design</span><span class="k">]</span>
+
+<span class="nv">set_property</span><span class="w"> </span>BITSTREAM.CONFIG.SPI_BUSWIDTH<span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="k">[</span><span class="nv">current_design</span><span class="k">]</span><span class="w"> </span>
+set_property<span class="w"> </span>CONFIG_MODE<span class="w"> </span>SPIx4<span class="w"> </span><span class="k">[</span><span class="nv">current_design</span><span class="k">]</span><span class="w"> </span>
+set_property<span class="w"> </span>BITSTREAM.CONFIG.CONFIGRATE<span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="k">[</span><span class="nv">current_design</span><span class="k">]</span><span class="w"> </span>
+
+create_clock<span class="w"> </span><span class="o">-</span>period<span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span>sys_clk<span class="k">]</span>
+<span class="nv">set_property</span><span class="w"> </span>IOSTANDARD<span class="w"> </span>LVCMOS33<span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span><span class="k">{</span><span class="nv">sys_clk</span><span class="k">}]</span>
+<span class="nv">set_property</span><span class="w"> </span>PACKAGE_PIN<span class="w"> </span>Y18<span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span><span class="k">{</span><span class="nv">sys_clk</span><span class="k">}]</span>
+
+<span class="nv">set_property</span><span class="w"> </span>IOSTANDARD<span class="w"> </span>LVCMOS33<span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span><span class="k">{</span><span class="nv">rstb</span><span class="k">}]</span>
+<span class="nv">set_property</span><span class="w"> </span>PACKAGE_PIN<span class="w"> </span>F20<span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span><span class="k">{</span><span class="nv">rstb</span><span class="k">}]</span>
+
+<span class="c"># set_property IOSTANDARD LVCMOS33 [get_ports uart_rx]</span>
+<span class="c"># set_property PACKAGE_PIN G15 [get_ports uart_rx]</span>
+
+<span class="nv">set_property</span><span class="w"> </span>IOSTANDARD<span class="w"> </span>LVCMOS33<span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span>uart_tx<span class="k">]</span>
+<span class="nv">set_property</span><span class="w"> </span>PACKAGE_PIN<span class="w"> </span>G16<span class="w"> </span><span class="k">[</span><span class="nv">get_ports</span><span class="w"> </span>uart_tx<span class="k">]</span>
+</pre></div>
+</div>
+</section>
+<section id="pc">
+<h5>PC端<a class="headerlink" href="#pc" title="Link to this heading"></a></h5>
+<p>可以用python提供的包 <a class="reference external" href="https://pyserial.readthedocs.io/en/latest/shortintro.html">pyserial</a>，注意使用之前需要先安装 (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pyserial</span></code>)，具体的安装流程见：<a class="reference external" href="https://pyserial.readthedocs.io/en/latest/pyserial.html#installation">here</a></p>
+<p>在将上面的FPGA设计程序烧录到FPGA之后，连接A7035B开发板上的UART口到PC的USB端：</p>
+<p><img alt="connection_picture" src="screenshot_7" /></p>
+<p>自己写个简单的接收程序：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">serial</span>
+<span class="n">ser</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="s1">&#39;/dev/ttyUSB0&#39;</span><span class="p">)</span>
+<span class="c1"># ser = serial.Serial(&#39;COM1&#39;) </span>
+<span class="n">ser</span><span class="o">.</span><span class="n">baudrate</span> <span class="o">=</span> <span class="mi">115200</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="c1">#收3个byte，理论上应该会出现“666”</span>
+</pre></div>
+</div>
+<p>注意：不同操作系统对于接口的命令规则不太一样，windows的话应该类似于<code class="docutils literal notranslate"><span class="pre">COM1</span></code>、<code class="docutils literal notranslate"><span class="pre">COM2</span></code>这种，需要去设备管理器去找对应的接口；Linux/MACOS的应该类似于上面的<code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code>或者<code class="docutils literal notranslate"><span class="pre">/dev/tty.usbserial0</span></code>.</p>
+<p>成功的话结果应该为：</p>
+<p><img alt="connection_picture" src="screenshot_8" /></p>
+<p>这样我们就先完成一次简单数字芯片与上位机之间的通信对接！🛰</p>
+</section>
 </section>
 <section id="id4">
 <h4>–最终再试着不仿真的情况读一下下面的代码–<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>

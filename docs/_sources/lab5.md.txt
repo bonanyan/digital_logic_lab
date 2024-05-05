@@ -163,8 +163,54 @@ Alinx的官方教程提供了一个示例教程：[串口收发实验](_static/a
 
 #### --我们可以先用实际FPGA与PC试一下“不停发送666”程序的通信--
 根据上面的*串口收发实验*示例教程，试着连一下我们自己的Verilog数字电路设计：
-- FPGA端：通过vivado把上面的test1 module烧到我们的FPGA中去，记得绑定IO；
-- PC端：可以用python提供的包。
+##### FPGA端: 
+通过vivado把上面的test1 module烧到我们的FPGA中去，记得绑定IO；
+
+FPGA的constraint:
+```tcl
+set_property CFGBVS VCCO [current_design]
+set_property CONFIG_VOLTAGE 3.3 [current_design]
+
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design] 
+set_property CONFIG_MODE SPIx4 [current_design] 
+set_property BITSTREAM.CONFIG.CONFIGRATE 50 [current_design] 
+
+create_clock -period 20 [get_ports sys_clk]
+set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}]
+set_property PACKAGE_PIN Y18 [get_ports {sys_clk}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports {rstb}]
+set_property PACKAGE_PIN F20 [get_ports {rstb}]
+
+# set_property IOSTANDARD LVCMOS33 [get_ports uart_rx]
+# set_property PACKAGE_PIN G15 [get_ports uart_rx]
+
+set_property IOSTANDARD LVCMOS33 [get_ports uart_tx]
+set_property PACKAGE_PIN G16 [get_ports uart_tx]
+```
+
+##### PC端
+可以用python提供的包 [pyserial](https://pyserial.readthedocs.io/en/latest/shortintro.html)，注意使用之前需要先安装 (```pip install pyserial```)，具体的安装流程见：[here](https://pyserial.readthedocs.io/en/latest/pyserial.html#installation)
+
+在将上面的FPGA设计程序烧录到FPGA之后，连接A7035B开发板上的UART口到PC的USB端：
+
+![connection_picture](screenshot_7)
+
+自己写个简单的接收程序：
+```python
+import serial
+ser = serial.Serial('/dev/ttyUSB0')
+# ser = serial.Serial('COM1') 
+ser.baudrate = 115200
+print(ser.read(3)) #收3个byte，理论上应该会出现“666”
+```
+注意：不同操作系统对于接口的命令规则不太一样，windows的话应该类似于```COM1```、```COM2```这种，需要去设备管理器去找对应的接口；Linux/MACOS的应该类似于上面的```/dev/ttyUSB0```或者```/dev/tty.usbserial0```.
+
+成功的话结果应该为：
+
+![connection_picture](screenshot_8)
+
+这样我们就先完成一次简单数字芯片与上位机之间的通信对接！🛰
 
 #### --最终再试着不仿真的情况读一下下面的代码--
 ```Verilog
