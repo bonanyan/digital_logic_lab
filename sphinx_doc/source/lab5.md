@@ -52,7 +52,7 @@ RX pin说明：
 | rx_data_ready | I         | 1         | ready to receive? high active |
 
 
-我们先写一个数字电路模块来利用UART TX interface，在reset之后，把"6"的码字不停地扔向tx_data：
+我们先写一个数字电路模块来利用UART TX interface，在reset之后，把"6"(注意这里是ASCII码,不是8'd6;当然想传8'd6也没有问题的)的码字不停地扔向tx_data：
 ```Verilog
 module test1
 (
@@ -142,7 +142,6 @@ end
 test1 u1(
 .sys_clk(sys_clk),
 .rstb(rstb),
-.uart_rx(uart_rx),
 .uart_tx(uart_tx)
 );
 
