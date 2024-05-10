@@ -30,8 +30,8 @@ ssh [你的账户名]@162.105.19.189
 #### 说明：
 - 无论用powershell、terminal、Xshell还是putty，你的远程服务器上的账户为：
 ```bash
-username: 你的名字拼音+姓首字母，全小写
-password: pku0627
+username: 你的名字拼音+姓首字母，全小写，比如燕博南：bonany
+password: 你的用户名+012（没有加号）
 ```
 - 不管用哪种方法，成功完成远程连接后应该显示类似下图的界面，前面是你自己的账户名，后面“bn-cent”是我们的工作站的主机名：
   ![loginTerminalScreenShot](_static/assets/screenshot_1.png)
