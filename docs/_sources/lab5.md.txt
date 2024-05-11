@@ -350,6 +350,11 @@ uart_tx#
 endmodule
 ```
 
+常见Bug：
+- UART不识别:: CP2101转换芯片需要单独再装一下驱动,[https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
+- UART不识别:: 硬件插错口了,USB线要插UART口而非JTAG口
+- 总是发生bit error:: 我上面示例程序写得其实并不好,所以总出错；通过改变触发条件(tx_send_enable, rx_receive_enable)可以改善。
+
 
 
 ---
