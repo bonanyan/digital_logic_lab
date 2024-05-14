@@ -61,7 +61,7 @@ scp [你的design file.v] [你的账户名]@162.105.19.189:~/
 - 具体使用方法请自行百度/问LLM，学习时间约3分钟以内。
 
 ### 第三步：在服务器上进行逻辑综合（我们用Genus）
-1. 为师我准备了示例文件夹：/home/share/GenusSyn，先把它copy-paste到自己的根目录：
+1. 为师我准备了示例文件夹：/home/opt/share/GenusSyn，先把它copy-paste到自己的根目录：
 ```bash
 cp -r /home/opt/share/GenusSyn ~/
 cd ~/GenusSyn
