@@ -68,9 +68,9 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
 其中W_Q（模型训练参数）, W_K（模型训练参数）, W_V（模型训练参数）, X（vectorized token）为已知输入，我们来设计一个加速器完成图4公式计算功能。
 
 注：
-- 一切手段都可以用，但是要满足以下条件。
+- 一切手段都可以用，但是要满足以下条件
 - 设所有的操作数均为SINT8，不考虑溢出情况
-- Input Memory与Result Memory的数据排布方式由你决定
+- Input Memory与Result Memory的数据排布方式由你决定，稍后会提供testbench
 - 设所有的矩阵维度均为512×512
 - 全世界只有一个3ns~5ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在3ns~5ns之间任意选择，精确到小数点后2位。
 - SRAM memory读延迟<3ns, SRAM的IO port最多为256bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限
@@ -81,7 +81,7 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
     - alpha×power/C0+beta×latency/C1+gamma×area/C2
     - alpha, beta, gamma为归一化权重，暂定为alpha=0.2, beta=0.4, gamma=0.4 (2024年)
     - C0 (unit:W), C1 (unit:sec), C2 (unit:um^2)为示例归一化参考值，稍后提供【待定】
-    - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）
+    - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）;也可以是cycle number×shortest clock period (target freq-slack)
     - 逻辑综合后critical path setup time slack>0
 - 接下来每周可进行≤1次提交打榜（联系燕老师提交syn report），看一下自己的设计在得分榜多少位
 - 最后课程成绩相关的（竞赛大作业部分）评分规则：
