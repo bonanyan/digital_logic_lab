@@ -72,8 +72,8 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
 - 设所有的操作数均为SINT8，不考虑溢出情况
 - Input Memory与Result Memory的数据排布方式由你决定，稍后会提供testbench
 - 设所有的矩阵维度均为512×512
-- 全世界只有一个3ns~5ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在3ns~5ns之间任意选择，精确到小数点后2位。
-- SRAM memory读延迟<3ns, SRAM的IO port最多为256bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限
+- 全世界只有一个1ns~2ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~2ns之间任意选择，精确到小数点后2位。
+- SRAM memory读延迟<1ns, SRAM的IO port最多为256bit宽，最少可为8bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限；可简单认为SRAM的面积正比于容量
 - 最终加速器评分要求：
   - 计算功能正确
   - 稍后会提供示例W_Q, W_K, W_V, X矩阵【待定】
@@ -83,6 +83,10 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
     - C0 (unit:W), C1 (unit:sec), C2 (unit:um^2)为示例归一化参考值，稍后提供【待定】
     - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）;也可以是cycle number×shortest clock period (target freq-slack)
     - 逻辑综合后critical path setup time slack>0
+    - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
+    - 综合的时候请剔除SRAM macro，不然会很大
+    - 需要用多大的SRAM，它的面积与功耗值请联系燕老师获得
+    - Top Controller, Input Memory与Data Memory不计入最终PPA评分，我们只看accelerator
 - 接下来每周可进行≤1次提交打榜（联系燕老师提交syn report），看一下自己的设计在得分榜多少位
 - 最后课程成绩相关的（竞赛大作业部分）评分规则：
   - 竞赛大作业部分总分23分

@@ -146,8 +146,8 @@
 <li><p>设所有的操作数均为SINT8，不考虑溢出情况</p></li>
 <li><p>Input Memory与Result Memory的数据排布方式由你决定，稍后会提供testbench</p></li>
 <li><p>设所有的矩阵维度均为512×512</p></li>
-<li><p>全世界只有一个3ns~5ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在3ns~5ns之间任意选择，精确到小数点后2位。</p></li>
-<li><p>SRAM memory读延迟&lt;3ns, SRAM的IO port最多为256bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限</p></li>
+<li><p>全世界只有一个1ns~2ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~2ns之间任意选择，精确到小数点后2位。</p></li>
+<li><p>SRAM memory读延迟&lt;1ns, SRAM的IO port最多为256bit宽，最少可为8bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限；可简单认为SRAM的面积正比于容量</p></li>
 <li><p>最终加速器评分要求：</p>
 <ul>
 <li><p>计算功能正确</p></li>
@@ -159,6 +159,10 @@
 <li><p>C0 (unit:W), C1 (unit:sec), C2 (unit:um^2)为示例归一化参考值，稍后提供【待定】</p></li>
 <li><p>latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）;也可以是cycle number×shortest clock period (target freq-slack)</p></li>
 <li><p>逻辑综合后critical path setup time slack&gt;0</p></li>
+<li><p>用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算</p></li>
+<li><p>综合的时候请剔除SRAM macro，不然会很大</p></li>
+<li><p>需要用多大的SRAM，它的面积与功耗值请联系燕老师获得</p></li>
+<li><p>Top Controller, Input Memory与Data Memory不计入最终PPA评分，我们只看accelerator</p></li>
 </ul>
 </li>
 </ul>
