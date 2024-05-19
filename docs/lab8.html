@@ -51,7 +51,15 @@
 <li class="toctree-l1"><a class="reference internal" href="lab5.html">实验5、传输接口UART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab6.html">实验6、初识逻辑综合</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab7.html">实验7、Macro应用-存储器</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">实验8、矩阵乘法器及设计优化（课程竞赛大作业）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">硬件加速器的系统接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">为什么硬件加速？</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">具体问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">简化版问题（目标问题）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">本课程后面每节课，会简介优化方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">早点动手，多次尝试，把控时间，仔细推敲!</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -80,7 +88,99 @@
              
   <section id="id1">
 <h1>实验8、矩阵乘法器及设计优化（课程竞赛大作业）<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
-<p>待添加</p>
+<p>【实验8没有练习与提交的东西，只是为了熟悉加速器设计流程与环境配置】</p>
+<p>目标：加速矩阵乘法</p>
+<section id="id2">
+<h2>硬件加速器的系统接口<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>以RISC-V CPU提供的协处理器接口为：【图1】</p>
+<p><img alt="rocc interface" src="_images/rocc.png" /></p>
+<p>其中：</p>
+<ul class="simple">
+<li><p>cmd: CPU给出的指令</p></li>
+<li><p>resp: 加速器返回的指令</p></li>
+<li><p>mem.req：加速器要求的数据（以指令或中断形式发出），一般为加速器输入</p></li>
+<li><p>mem.resp: CPU cache返回的数据，一般为加速器输出的计算结果</p></li>
+</ul>
+<p>但是!为了避开CPU设计应答的部分（以后《计算机系统架构》或相似课程会学的），本实验我们用一个简单的接口来实现：【图2】</p>
+<p><img alt="this experiment interface" src="_images/thisInterface.png" /></p>
+</section>
+<section id="id3">
+<h2>为什么硬件加速？<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>如果用Python软件来计算Lab5中的向量-矩阵乘法（<strong>Y</strong>=<strong>X·W</strong>，结果维度应为1×2）：</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">w</span>
+    <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">startTime</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time taken for matrix multiplication: </span><span class="se">\n</span><span class="si">{</span><span class="n">times</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">}</span><span class="s2"> sec&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>用我的M1 Pro芯片跑出来的结果为平均耗时<code class="docutils literal notranslate"><span class="pre">1.809835433959961e-06</span> <span class="pre">sec</span></code>，即约为1.8us；
+而Lab5的组合逻辑电路，如果用20ns周期频率单周期即可完成，加速比为1.8us/20ns≈90倍。</p>
+<p>当然，现代处理器一般会面临“存储墙”问题，即数据传输速度比计算速度要慢，因此还需要像上面图2一样的数据传输接口。</p>
+</section>
+<section id="id4">
+<h2>具体问题<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<p>即然大语言模型这么火，那么我们就来做一个大模型加速器（部分）吧！由于【图3】：</p>
+<p><img alt="LLM1" src="_images/LLM1.png" /></p>
+<p>所示，Self-Attention算法模块的参数量占了绝大多数计算操作数，所以我们先仅关注Self-Attention的计算。那么Self-Attention模块的计算表达式为：</p>
+<p><img alt="LLM2" src="_images/LLM2.png" /></p>
+<p>如果用流程图来表示，它做的计算为：</p>
+<p><img alt="LLM3" src="_images/LLM3.png" /></p>
+</section>
+<section id="id5">
+<h2>简化版问题（目标问题）<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<p>其中W_Q, W_K, W_V预存的参数，Softmax非线性激活函数如果先忽略，所以其实我们需要定制一个【图4】</p>
+<p><img alt="LLM4" src="_images/LLM4.png" /></p>
+<p>其中W_Q（模型训练参数）, W_K（模型训练参数）, W_V（模型训练参数）, X（vectorized token）为已知输入，我们来设计一个加速器完成图4公式计算功能。</p>
+<p>注：</p>
+<ul class="simple">
+<li><p>一切手段都可以用，但是要满足以下条件。</p></li>
+<li><p>设所有的操作数均为SINT8，不考虑溢出情况</p></li>
+<li><p>Input Memory与Result Memory的数据排布方式由你决定</p></li>
+<li><p>设所有的矩阵维度均为512×512</p></li>
+<li><p>全世界只有一个3ns~5ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在3ns~5ns之间任意选择，精确到小数点后2位。</p></li>
+<li><p>SRAM memory读延迟&lt;3ns, SRAM的IO port最多为256bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限</p></li>
+<li><p>最终加速器评分要求：</p>
+<ul>
+<li><p>计算功能正确</p></li>
+<li><p>稍后会提供示例W_Q, W_K, W_V, X矩阵【待定】</p></li>
+<li><p>在计算功能正确的情况下，综合PPA得分计算公式为：</p>
+<ul>
+<li><p>alpha×power/C0+beta×latency/C1+gamma×area/C2</p></li>
+<li><p>alpha, beta, gamma为归一化权重，暂定为alpha=0.2, beta=0.4, gamma=0.4 (2024年)</p></li>
+<li><p>C0 (unit:W), C1 (unit:sec), C2 (unit:um^2)为示例归一化参考值，稍后提供【待定】</p></li>
+<li><p>latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）</p></li>
+<li><p>逻辑综合后critical path setup time slack&gt;0</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>接下来每周可进行≤1次提交打榜（联系燕老师提交syn report），看一下自己的设计在得分榜多少位</p></li>
+<li><p>最后课程成绩相关的（竞赛大作业部分）评分规则：</p>
+<ul>
+<li><p>竞赛大作业部分总分23分</p></li>
+<li><p>如功能未实现大作业部分为0分</p></li>
+<li><p>在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名有关，打榜排名转得分的公式稍后给出（可线性或非线性）</p></li>
+</ul>
+</li>
+<li><p>截止日期初步设定在第18周？【待定】</p></li>
+</ul>
+</section>
+<section id="id6">
+<h2>本课程后面每节课，会简介优化方法<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<p>时序收敛方法、脉动阵列架构、bit-serial乘法、稀疏计算优化……</p>
+</section>
+<section id="id7">
+<h2>早点动手，多次尝试，把控时间，仔细推敲!<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+</section>
 </section>
 
 
