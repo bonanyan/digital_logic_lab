@@ -287,3 +287,5 @@ post-syn仿真验证功能通过:D
 | Power                     | W      |       |
 | Cell Number               | 1      |       |
 | Area                      | um^2   |       |
+
+注：Fastest Working Frequency = 1 / (设置的working period - slack)
