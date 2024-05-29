@@ -78,13 +78,14 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
   - 计算功能正确
   - 稍后会提供示例W_Q, W_K, W_V, X矩阵【待定】
   - 在计算功能正确的情况下，综合PPA得分计算公式为：
-    - alpha×power/C0+beta×latency/C1+gamma×area/C2
-    - alpha, beta, gamma为归一化权重，暂定为alpha=0.2, beta=0.4, gamma=0.4 (2024年)
-    - C0 (unit:W), C1 (unit:sec), C2 (unit:um^2)为示例归一化参考值，稍后提供【待定】
+    - alpha×power/C0+beta×latency/C1+gamma×area/C2+delta*calculation_loss/C3
+    - alpha, beta, gamma为归一化权重，例如alpha=0.2, beta=0.4, gamma=0.4 (2024年)
+    - C0 (unit:W), C1 (unit:sec), C2 (unit:um^2), C3 (unit:1)为示例归一化参考值，稍后提供【待定】
     - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）;也可以是cycle number×shortest clock period (target freq-slack)
     - 逻辑综合后critical path setup time slack>0
     - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
     - 综合的时候请剔除SRAM macro，不然会很大
+    - input memory, result memory与top controller不计入PPA计算
     - 需要用多大的SRAM，它的面积与功耗值请联系燕老师获得
     - Top Controller, Input Memory与Data Memory不计入最终PPA评分，我们只看accelerator
 - 接下来每周可进行≤1次提交打榜（联系燕老师提交syn report），看一下自己的设计在得分榜多少位
@@ -92,7 +93,19 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
   - 竞赛大作业部分总分23分
   - 如功能未实现大作业部分为0分
   - 在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关，具体评分方式【待定】
-- 截止日期【待定】我们尽量多留一些时间
+- 截止日期2024年7月5日晚11:59:00，提交：
+  - 设计报告
+  - 设计与测试代码
+  - 综合用脚本syn.tcl
+  - PPA报告
+
+```{note}
+**提示** 千万不要一下子一大坨top，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来
+```
+
+```{note}
+**提示** 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
+```
 
 ## 本课程后面每节课，会简介优化方法
 
