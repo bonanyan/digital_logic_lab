@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>实验8、矩阵乘法器及设计优化（课程竞赛大作业） &mdash; 数字系统设计与实践-实验  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -58,6 +60,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#id5">简化版问题（目标问题）</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id6">本课程后面每节课，会简介优化方法</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id7">早点动手，多次尝试，把控时间，仔细推敲!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">资源：</a></li>
 </ul>
 </li>
 </ul>
@@ -189,10 +192,6 @@
 <p class="admonition-title">Note</p>
 <p><strong>提示</strong> 千万不要一下子一大坨top，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>提示</strong> 加速器框架见 <a class="reference download internal" download="" href="_downloads/6d6d4809560c921e3f9a7ec04844fe96/lab8_framework.tar.gz"><span class="xref download myst">lab8_framework.tar.gz</span></a></p>
-</div>
 </section>
 <section id="id6">
 <h2>本课程后面每节课，会简介优化方法<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
@@ -200,6 +199,19 @@
 </section>
 <section id="id7">
 <h2>早点动手，多次尝试，把控时间，仔细推敲!<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+</section>
+<section id="id8">
+<h2>资源：<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>加速器框架见 <a class="reference download internal" download="" href="_downloads/6d6d4809560c921e3f9a7ec04844fe96/lab8_framework.tar.gz"><span class="xref download myst">lab8_framework.tar.gz</span></a></p></li>
+<li><p>示例输入input_mem: <a class="reference download internal" download="" href="_downloads/e8e1fcbd5c4163ad15facb025af9bb2b/lab8_generate_input.tar.gz"><span class="xref download myst">lab8_generate_input.tar.gz</span></a></p>
+<ul>
+<li><p>生成伪随机输入input_mem.csv : <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">generate_input</span></code></p></li>
+<li><p>加速器在verilog里计算并把结果置于result_mem.csv: <code class="docutils literal notranslate"><span class="pre">make</span></code></p></li>
+<li><p>清空生成代码：<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code></p></li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 

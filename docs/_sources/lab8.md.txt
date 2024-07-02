@@ -103,12 +103,17 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
 **提示** 千万不要一下子一大坨top，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来
 ```
 
-```{note}
-**提示** 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
-```
+
 
 ## 本课程后面每节课，会简介优化方法
 
 时序收敛方法、脉动阵列架构、bit-serial乘法、稀疏计算优化……
 
 ## 早点动手，多次尝试，把控时间，仔细推敲!
+
+## 资源：
+- 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
+- 示例输入input_mem: [lab8_generate_input.tar.gz](_static/assets/lab8_generate_input.tar.gz) 
+  - 生成伪随机输入input_mem.csv : ```make generate_input```
+  - 加速器在verilog里计算并把结果置于result_mem.csv: ```make```
+  - 清空生成代码：```make clean```
