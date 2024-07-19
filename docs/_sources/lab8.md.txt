@@ -68,7 +68,7 @@ Y=XW矩阵乘法计算。
 
 ### 说明2, 基本加速器框架为:
 - 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
-- 示例输入与结果检查见 [lab8_generate_input.tar.gz](_static/assets/lab8_flow_240719.zip) :
+- 示例输入与结果检查见 [lab8_flow.tar.gz](_static/assets/lab8_flow_240719.zip) :
   - 生成伪随机输入input_mem.csv (生成的结构是前512*512/8个地址为第一个矩阵，地址23'd32768开始为第二个512*512*INT8矩阵): ```make generate_input```
   - 检查结果 (需要把CheckResult.py里第40行注掉并解注41行):```make check_result```
   - 加速器在verilog里计算并把结果置于result_mem.csv: ```make```
@@ -89,7 +89,7 @@ Y=XW矩阵乘法计算。
 - 在计算功能正确的情况下，综合得分Score计算公式为：
   - Score=alpha×(power/C0)+beta×(latency/C1)+gamma×(area/C2)+delta*(relative_loss) (越小越好)
   - relative_loss定义为:∑(((correct_result(矩阵)-calculated_result(矩阵))/correct_result(矩阵))^2),单位为1
-  - alpha, beta, gamma为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)
+  - alpha, beta, gamma, delta为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)
   - 归一化常数: C0 (unit:mW) = 40, C1 (unit:sec) = 0.009, C2 (unit:um^2) = 90000
   - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)
   - 逻辑综合后critical path setup time slack>0, 对应设置的主频

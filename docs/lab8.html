@@ -158,7 +158,7 @@
 <h3>说明2, 基本加速器框架为:<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>加速器框架见 <a class="reference download internal" download="" href="_downloads/6d6d4809560c921e3f9a7ec04844fe96/lab8_framework.tar.gz"><span class="xref download myst">lab8_framework.tar.gz</span></a></p></li>
-<li><p>示例输入与结果检查见 <a class="reference download internal" download="" href="_downloads/400da6ed7a975652dc67ddf85ae4bef8/lab8_flow_240719.zip"><span class="xref download myst">lab8_generate_input.tar.gz</span></a> :</p>
+<li><p>示例输入与结果检查见 <a class="reference download internal" download="" href="_downloads/400da6ed7a975652dc67ddf85ae4bef8/lab8_flow_240719.zip"><span class="xref download myst">lab8_flow.tar.gz</span></a> :</p>
 <ul>
 <li><p>生成伪随机输入input_mem.csv (生成的结构是前512<em>512/8个地址为第一个矩阵，地址23’d32768开始为第二个512</em>512*INT8矩阵): <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">generate_input</span></code></p></li>
 <li><p>检查结果 (需要把CheckResult.py里第40行注掉并解注41行):<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">check_result</span></code></p></li>
@@ -192,7 +192,7 @@
 <ul>
 <li><p>Score=alpha×(power/C0)+beta×(latency/C1)+gamma×(area/C2)+delta*(relative_loss) (越小越好)</p></li>
 <li><p>relative_loss定义为:∑(((correct_result(矩阵)-calculated_result(矩阵))/correct_result(矩阵))^2),单位为1</p></li>
-<li><p>alpha, beta, gamma为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)</p></li>
+<li><p>alpha, beta, gamma, delta为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)</p></li>
 <li><p>归一化常数: C0 (unit:mW) = 40, C1 (unit:sec) = 0.009, C2 (unit:um^2) = 90000</p></li>
 <li><p>latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)</p></li>
 <li><p>逻辑综合后critical path setup time slack&gt;0, 对应设置的主频</p></li>
