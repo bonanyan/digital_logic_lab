@@ -46,7 +46,6 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
 
 ## 具体问题
 
-
 即然大语言模型这么火，那么我们就来做一个大模型加速器（部分）吧！由于【图3】：
 
 ![LLM1](_static/assets/LLM1.png)
@@ -61,48 +60,56 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
 
 ## 简化版问题（目标问题）
 
-其中W_Q, W_K, W_V预存的参数，Softmax非线性激活函数如果先忽略，所以其实我们需要定制一个【图4】
+Y=XW矩阵乘法计算。
 
-![LLM4](_static/assets/LLM4.png)
-
-其中W_Q（模型训练参数）, W_K（模型训练参数）, W_V（模型训练参数）, X（vectorized token）为已知输入，我们来设计一个加速器完成图4公式计算功能。
-
-注：
+### 说明1:
 - 一切手段都可以用，但是要满足以下条件
-- 设所有的操作数均为SINT8，不考虑溢出情况
-- Input Memory与Result Memory的数据排布方式由你决定，稍后会提供testbench
-- 设所有的矩阵维度均为512×512
+- 设所有输入的操作数均为SINT8，输入矩阵维度均为512×512
+
+### 说明2, 基本加速器框架为:
+- 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
+- 示例输入与结果检查见 [lab8_generate_input.tar.gz](_static/assets/lab8_flow_240719.zip) :
+  - 生成伪随机输入input_mem.csv (生成的结构是前512*512/8个地址为第一个矩阵，地址23'd32768开始为第二个512*512*INT8矩阵): ```make generate_input```
+  - 检查结果 (需要把CheckResult.py里第40行注掉并解注41行):```make check_result```
+  - 加速器在verilog里计算并把结果置于result_mem.csv: ```make```
+  - 清空生成代码：```make clean```
+- Input Memory与Result Memory的数据排布方式由你决定，不过起始输入排布和最终检查结果会用上面```make generate_input```与```make check_result```进行，所以中间的数据重新排布可以用C++/Python软件程序的方式进行（按需自己写就行）
+
+### 说明3, 关于片上Buffer:
 - 全世界只有一个1ns~2ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~2ns之间任意选择，精确到小数点后2位。
-- SRAM memory读延迟<1ns, SRAM的IO port最多为256bit宽，最少可为8bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限；可简单认为SRAM的面积正比于容量
-- 最终加速器评分要求：
-  - 计算功能正确
-  - 稍后会提供示例W_Q, W_K, W_V, X矩阵【待定】
-  - 在计算功能正确的情况下，综合PPA得分计算公式为：
-    - alpha×power/C0+beta×latency/C1+gamma×area/C2+delta*calculation_loss/C3
-    - alpha, beta, gamma为归一化权重，例如alpha=0.2, beta=0.4, gamma=0.4 (2024年)
-    - C0 (unit:W), C1 (unit:sec), C2 (unit:um^2), C3 (unit:1)为示例归一化参考值，稍后提供【待定】
-    - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）;也可以是cycle number×shortest clock period (target freq-slack)
-    - 逻辑综合后critical path setup time slack>0
-    - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
-    - 综合的时候请剔除SRAM macro，不然会很大
-    - input memory, result memory与top controller不计入PPA计算
-    - 需要用多大的SRAM，它的面积与功耗值请联系燕老师获得
-    - Top Controller, Input Memory与Data Memory不计入最终PPA评分，我们只看accelerator
-- 接下来每周可进行≤1次提交打榜（联系燕老师提交syn report），看一下自己的设计在得分榜多少位
+- SRAM memory读延迟<1ns, SRAM可选择的参数 (IO bit width, 可以存多少个word，以及对应的面积和功耗)在[SRAM_available_specs](_static/assets/SRAM_Specs.xlsx)里，如果想用更多地址、多大空间，请用提供的这些小模块自行组合
+- 功耗计算为：动态功耗(W/Hz)*工作频率(Hz)+静态功耗(W)
+
+### 说明4, 芯片规模与精度：
+- 虽然理论上可以做任意规模(如10000)的MAC乘加，但是注意TPUv4中每个unit也就16×16×16=4096个乘法器，华为昇腾单个计算核也不过16×8的维度，千万不要上来就做太多乘加器。
+- 我们的输入有35%的稀疏度（35%的零），请考虑一下中间计算结果需要用BF16还是直接用long INT。
+
+### 说明5, 最终加速器评分：
+- 计算功能正确 (60分)
+- 在计算功能正确的情况下，综合得分Score计算公式为：
+  - Score=alpha×(power/C0)+beta×(latency/C1)+gamma×(area/C2)+delta*(relative_loss) (越小越好)
+  - relative_loss定义为:∑(((correct_result(矩阵)-calculated_result(矩阵))/correct_result(矩阵))^2),单位为1
+  - alpha, beta, gamma为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)
+  - 归一化常数: C0 (unit:mW) = 40, C1 (unit:sec) = 0.009, C2 (unit:um^2) = 90000
+  - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)
+  - 逻辑综合后critical path setup time slack>0, 对应设置的主频
+  - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
+  - 综合的时候请剔除SRAM macro(将SRAM port拉到顶层, 待logic syn的design不应包含SRAM instances)，不然会很大
+  - input memory, result memory与top controller不计入PPA计算
+  - Top Controller, Input Memory与Data Memory不计入最终PPA评分，我们只看accelerator
 - 最后课程成绩相关的（竞赛大作业部分）评分规则：
   - 竞赛大作业部分总分23分
   - 如功能未实现大作业部分为0分
-  - 在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关，具体评分方式【待定】
-- 截止日期2024年7月15日晚11:58:59，提交：
-  - 设计报告
+  - 在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关
+- 截止日期2024年7月25日晚11:58:59，提交：
+  - 设计报告(自己计算一下上面的得分)
   - 设计与测试代码
   - 综合用脚本syn.tcl
-  - PPA报告
+  - PPA原始报告 (top level)
 
 ```{note}
-**提示** 千万不要一下子一大坨top，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来
+**提示** 千万不要一下子写一大坨top RTL，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来
 ```
-
 
 
 ## 本课程后面每节课，会简介优化方法
@@ -110,10 +117,3 @@ print(f"Time taken for matrix multiplication: \n{times.mean()} sec")
 时序收敛方法、脉动阵列架构、bit-serial乘法、稀疏计算优化……
 
 ## 早点动手，多次尝试，把控时间，仔细推敲!
-
-## 资源：
-- 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
-- 示例输入input_mem: [lab8_generate_input.tar.gz](_static/assets/lab8_generate_input.tar.gz) 
-  - 生成伪随机输入input_mem.csv : ```make generate_input```
-  - 加速器在verilog里计算并把结果置于result_mem.csv: ```make```
-  - 清空生成代码：```make clean```

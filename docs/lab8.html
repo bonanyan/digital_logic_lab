@@ -57,10 +57,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#id2">硬件加速器的系统接口</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id3">为什么硬件加速？</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id4">具体问题</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">简化版问题（目标问题）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">本课程后面每节课，会简介优化方法</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">早点动手，多次尝试，把控时间，仔细推敲!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">资源：</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">简化版问题（目标问题）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">说明1:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">说明2, 基本加速器框架为:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#buffer">说明3, 关于片上Buffer:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">说明4, 芯片规模与精度：</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">说明5, 最终加速器评分：</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">本课程后面每节课，会简介优化方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">早点动手，多次尝试，把控时间，仔细推敲!</a></li>
 </ul>
 </li>
 </ul>
@@ -140,78 +146,90 @@
 </section>
 <section id="id5">
 <h2>简化版问题（目标问题）<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
-<p>其中W_Q, W_K, W_V预存的参数，Softmax非线性激活函数如果先忽略，所以其实我们需要定制一个【图4】</p>
-<p><img alt="LLM4" src="_images/LLM4.png" /></p>
-<p>其中W_Q（模型训练参数）, W_K（模型训练参数）, W_V（模型训练参数）, X（vectorized token）为已知输入，我们来设计一个加速器完成图4公式计算功能。</p>
-<p>注：</p>
+<p>Y=XW矩阵乘法计算。</p>
+<section id="id6">
+<h3>说明1:<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>一切手段都可以用，但是要满足以下条件</p></li>
-<li><p>设所有的操作数均为SINT8，不考虑溢出情况</p></li>
-<li><p>Input Memory与Result Memory的数据排布方式由你决定，稍后会提供testbench</p></li>
-<li><p>设所有的矩阵维度均为512×512</p></li>
+<li><p>设所有输入的操作数均为SINT8，输入矩阵维度均为512×512</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>说明2, 基本加速器框架为:<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>加速器框架见 <a class="reference download internal" download="" href="_downloads/6d6d4809560c921e3f9a7ec04844fe96/lab8_framework.tar.gz"><span class="xref download myst">lab8_framework.tar.gz</span></a></p></li>
+<li><p>示例输入与结果检查见 <a class="reference download internal" download="" href="_downloads/400da6ed7a975652dc67ddf85ae4bef8/lab8_flow_240719.zip"><span class="xref download myst">lab8_generate_input.tar.gz</span></a> :</p>
+<ul>
+<li><p>生成伪随机输入input_mem.csv (生成的结构是前512<em>512/8个地址为第一个矩阵，地址23’d32768开始为第二个512</em>512*INT8矩阵): <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">generate_input</span></code></p></li>
+<li><p>检查结果 (需要把CheckResult.py里第40行注掉并解注41行):<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">check_result</span></code></p></li>
+<li><p>加速器在verilog里计算并把结果置于result_mem.csv: <code class="docutils literal notranslate"><span class="pre">make</span></code></p></li>
+<li><p>清空生成代码：<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code></p></li>
+</ul>
+</li>
+<li><p>Input Memory与Result Memory的数据排布方式由你决定，不过起始输入排布和最终检查结果会用上面<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">generate_input</span></code>与<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">check_result</span></code>进行，所以中间的数据重新排布可以用C++/Python软件程序的方式进行（按需自己写就行）</p></li>
+</ul>
+</section>
+<section id="buffer">
+<h3>说明3, 关于片上Buffer:<a class="headerlink" href="#buffer" title="Link to this heading"></a></h3>
+<ul class="simple">
 <li><p>全世界只有一个1ns~2ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~2ns之间任意选择，精确到小数点后2位。</p></li>
-<li><p>SRAM memory读延迟&lt;1ns, SRAM的IO port最多为256bit宽，最少可为8bit宽，单个SRAM instance最大容量为1Mb，可用的instance number数量不限；可简单认为SRAM的面积正比于容量</p></li>
-<li><p>最终加速器评分要求：</p>
+<li><p>SRAM memory读延迟&lt;1ns, SRAM可选择的参数 (IO bit width, 可以存多少个word，以及对应的面积和功耗)在<a class="reference download internal" download="" href="_downloads/3ddd32ffc95d69b9d6ba959d243fef44/SRAM_Specs.xlsx"><span class="xref download myst">SRAM_available_specs</span></a>里，如果想用更多地址、多大空间，请用提供的这些小模块自行组合</p></li>
+<li><p>功耗计算为：动态功耗(W/Hz)*工作频率(Hz)+静态功耗(W)</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3>说明4, 芯片规模与精度：<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>虽然理论上可以做任意规模(如10000)的MAC乘加，但是注意TPUv4中每个unit也就16×16×16=4096个乘法器，华为昇腾单个计算核也不过16×8的维度，千万不要上来就做太多乘加器。</p></li>
+<li><p>我们的输入有35%的稀疏度（35%的零），请考虑一下中间计算结果需要用BF16还是直接用long INT。</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>说明5, 最终加速器评分：<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>计算功能正确 (60分)</p></li>
+<li><p>在计算功能正确的情况下，综合得分Score计算公式为：</p>
 <ul>
-<li><p>计算功能正确</p></li>
-<li><p>稍后会提供示例W_Q, W_K, W_V, X矩阵【待定】</p></li>
-<li><p>在计算功能正确的情况下，综合PPA得分计算公式为：</p>
-<ul>
-<li><p>alpha×power/C0+beta×latency/C1+gamma×area/C2+delta*calculation_loss/C3</p></li>
-<li><p>alpha, beta, gamma为归一化权重，例如alpha=0.2, beta=0.4, gamma=0.4 (2024年)</p></li>
-<li><p>C0 (unit:W), C1 (unit:sec), C2 (unit:um^2), C3 (unit:1)为示例归一化参考值，稍后提供【待定】</p></li>
-<li><p>latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间（单位：ns）;也可以是cycle number×shortest clock period (target freq-slack)</p></li>
-<li><p>逻辑综合后critical path setup time slack&gt;0</p></li>
+<li><p>Score=alpha×(power/C0)+beta×(latency/C1)+gamma×(area/C2)+delta*(relative_loss) (越小越好)</p></li>
+<li><p>relative_loss定义为:∑(((correct_result(矩阵)-calculated_result(矩阵))/correct_result(矩阵))^2),单位为1</p></li>
+<li><p>alpha, beta, gamma为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)</p></li>
+<li><p>归一化常数: C0 (unit:mW) = 40, C1 (unit:sec) = 0.009, C2 (unit:um^2) = 90000</p></li>
+<li><p>latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)</p></li>
+<li><p>逻辑综合后critical path setup time slack&gt;0, 对应设置的主频</p></li>
 <li><p>用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算</p></li>
-<li><p>综合的时候请剔除SRAM macro，不然会很大</p></li>
+<li><p>综合的时候请剔除SRAM macro(将SRAM port拉到顶层, 待logic syn的design不应包含SRAM instances)，不然会很大</p></li>
 <li><p>input memory, result memory与top controller不计入PPA计算</p></li>
-<li><p>需要用多大的SRAM，它的面积与功耗值请联系燕老师获得</p></li>
 <li><p>Top Controller, Input Memory与Data Memory不计入最终PPA评分，我们只看accelerator</p></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><p>接下来每周可进行≤1次提交打榜（联系燕老师提交syn report），看一下自己的设计在得分榜多少位</p></li>
 <li><p>最后课程成绩相关的（竞赛大作业部分）评分规则：</p>
 <ul>
 <li><p>竞赛大作业部分总分23分</p></li>
 <li><p>如功能未实现大作业部分为0分</p></li>
-<li><p>在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关，具体评分方式【待定】</p></li>
+<li><p>在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关</p></li>
 </ul>
 </li>
-<li><p>截止日期2024年7月15日晚11:58:59，提交：</p>
+<li><p>截止日期2024年7月25日晚11:58:59，提交：</p>
 <ul>
-<li><p>设计报告</p></li>
+<li><p>设计报告(自己计算一下上面的得分)</p></li>
 <li><p>设计与测试代码</p></li>
 <li><p>综合用脚本syn.tcl</p></li>
-<li><p>PPA报告</p></li>
+<li><p>PPA原始报告 (top level)</p></li>
 </ul>
 </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>提示</strong> 千万不要一下子一大坨top，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来</p>
+<p><strong>提示</strong> 千万不要一下子写一大坨top RTL，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来</p>
 </div>
 </section>
-<section id="id6">
-<h2>本课程后面每节课，会简介优化方法<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+</section>
+<section id="id10">
+<h2>本课程后面每节课，会简介优化方法<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
 <p>时序收敛方法、脉动阵列架构、bit-serial乘法、稀疏计算优化……</p>
 </section>
-<section id="id7">
-<h2>早点动手，多次尝试，把控时间，仔细推敲!<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
-</section>
-<section id="id8">
-<h2>资源：<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>加速器框架见 <a class="reference download internal" download="" href="_downloads/6d6d4809560c921e3f9a7ec04844fe96/lab8_framework.tar.gz"><span class="xref download myst">lab8_framework.tar.gz</span></a></p></li>
-<li><p>示例输入input_mem: <a class="reference download internal" download="" href="_downloads/e8e1fcbd5c4163ad15facb025af9bb2b/lab8_generate_input.tar.gz"><span class="xref download myst">lab8_generate_input.tar.gz</span></a></p>
-<ul>
-<li><p>生成伪随机输入input_mem.csv : <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">generate_input</span></code></p></li>
-<li><p>加速器在verilog里计算并把结果置于result_mem.csv: <code class="docutils literal notranslate"><span class="pre">make</span></code></p></li>
-<li><p>清空生成代码：<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code></p></li>
-</ul>
-</li>
-</ul>
+<section id="id11">
+<h2>早点动手，多次尝试，把控时间，仔细推敲!<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
 </section>
 </section>
 
