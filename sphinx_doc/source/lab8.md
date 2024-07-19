@@ -85,12 +85,9 @@ Y=XW矩阵乘法计算。
 - 我们的输入有35%的稀疏度（35%的零），请考虑一下中间计算结果需要用BF16还是直接用long INT。
 
 ### 说明5, 最终加速器评分：
-- 计算功能正确 (60分)
+- 计算功能正确占此部分的70%
 - 在计算功能正确的情况下，综合得分Score计算公式为：
-  - Score=alpha×(power/C0)+beta×(latency/C1)+gamma×(area/C2)+delta*(relative_loss) (越小越好)
-  - relative_loss定义为:∑(((correct_result(矩阵)-calculated_result(矩阵))/correct_result(矩阵))^2),单位为1
-  - alpha, beta, gamma, delta为归一化权重: alpha=0.1, beta=0.2, gamma=0.4, delta=3 (2024年)
-  - 归一化常数: C0 (unit:mW) = 40, C1 (unit:sec) = 0.009, C2 (unit:um^2) = 90000
+  - Score = 功率power(unit:mW)×面积area(unit:um^2)×(时间(us)^2)
   - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)
   - 逻辑综合后critical path setup time slack>0, 对应设置的主频
   - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
@@ -100,7 +97,7 @@ Y=XW矩阵乘法计算。
 - 最后课程成绩相关的（竞赛大作业部分）评分规则：
   - 竞赛大作业部分总分23分
   - 如功能未实现大作业部分为0分
-  - 在实现功能后，此部分最低13.80分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关
+  - 在实现功能后，此部分最低16.10分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关
 - 截止日期2024年7月25日晚11:58:59，提交：
   - 设计报告(自己计算一下上面的得分)
   - 设计与测试代码
