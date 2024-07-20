@@ -67,8 +67,9 @@ Y=XW矩阵乘法计算。
 - 设所有输入的操作数均为SINT8，输入矩阵维度均为512×512
 
 ### 说明2, 基本加速器框架为:
-- 加速器框架见 [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
-- 示例输入与结果检查见 [lab8_flow_240719.zip](_static/assets/lab8_flow_240719.zip) :
+- 加速器框架: [lab8_framework.tar.gz](_static/assets/lab8_framework.tar.gz)
+- 加速器Verilator快速仿真框架: [lab8_flow_fast.tar.gz](_static/assets/lab8_flow_fast.tar.gz) (内有readme.html)
+- 示例输入与结果检查见 [lab8_flow_240721.zip](_static/assets/lab8_flow_240721.zip) :
   - 生成伪随机输入input_mem.csv (生成的结构是前512*512/8个地址为第一个矩阵，地址23'd32768开始为第二个512*512*INT8矩阵): ```make generate_input```
   - 检查结果 (需要把CheckResult.py里第40行注掉并解注41行):```make check_result```
   - 加速器在verilog里计算并把结果置于result_mem.csv: ```make```
