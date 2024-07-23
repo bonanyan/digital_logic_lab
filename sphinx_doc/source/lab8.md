@@ -88,7 +88,8 @@ Y=XW矩阵乘法计算。
 ### 说明5, 最终加速器评分：
 - 计算功能正确占此部分的70%
 - 在计算功能正确的情况下，综合得分Score计算公式为：
-  - Score = 功率power(unit:mW)×面积area(unit:um^2)×(时间(us)^2),同时计算准确度“相对平方和误差”单独计算
+  - Score = exp(SSE/C0)×功率power(unit:mW)×面积area(unit:um^2)×(时间(us)^2)
+  - 其中平方和误差Square-Sum Error (SSE) = ∑((计算结果每个element-正确无损计算结果每个element)^2)，其中C0=1E-3 (这个值是为了让BF16产生的1E-5的SSE影响整体分数在增加1%~5%左右，无损计算SSE=0时第一项应该为1)
   - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)
   - 逻辑综合后critical path setup time slack>0, 对应设置的主频
   - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
@@ -99,7 +100,7 @@ Y=XW矩阵乘法计算。
   - 竞赛大作业部分总分23分
   - 如功能未实现大作业部分为0分
   - 在实现功能后，此部分最低16.10分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关
-- 截止日期2024年7月25日晚11:58:59，提交：
+- 截止日期2024年7月25日晚11:58:59，请打包提交至北大教学网Lab8：
   - 设计报告(自己计算一下上面的得分)
   - 设计与测试代码
   - 综合用脚本syn.tcl
