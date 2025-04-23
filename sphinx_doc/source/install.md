@@ -15,7 +15,8 @@ Verilog HDL是一款起始于1989年左右的硬件描述语言，至今用于FP
 [流水灯上板测试](_static/assets/01.vivado下LED流水灯实验及仿真.pdf)
 
 - Alinx提供的Vivado安装
-[https://disk.pku.edu.cn/link/AA1F50EE726F9F495D9A873B6C55481233](https://disk.pku.edu.cn/link/AA1F50EE726F9F495D9A873B6C55481233)
+[https://disk.pku.edu.cn/link/AA131552BB0C3B4264B434C888AEA624F8](https://disk.pku.edu.cn/link/AA131552BB0C3B4264B434C888AEA624F8)
+
 
 ## 2-ASIC快速验证：Icarus Verilog+Gtkwave
 
