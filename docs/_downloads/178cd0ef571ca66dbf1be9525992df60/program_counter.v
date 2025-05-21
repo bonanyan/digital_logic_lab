@@ -1,25 +1,23 @@
-module ProgramCounter (
-  input         clk,
-  input         reset,
-  input  [31:0] dataIn,
-  output [31:0] dataOut,
-  input         writeEnable,    // 1 => WRITE, 0 => READ
-  input         writeAdd,       // 1 => Add dataIn to PC, 0 => Set dataIn to PC
-  input         countEnable     // 1 => COUNT UP, 0 => STOPPED
+module up_down_counter    (
+out      ,  // Output of the counter
+up_down  ,  // up_down control for counter
+clk      ,  // clock input
+reset       // reset input
 );
-
-reg [31:0] programCounter;
-
+//----------Output Ports--------------
+output [7:0] out;
+//------------Input Ports-------------- 
+input up_down, clk, reset;
+//------------Internal Variables--------
+reg [7:0] out;
+//-------------Code Starts Here-------
 always @(posedge clk)
-begin
-  if (reset)
-  begin
-    programCounter <= 0;
-  end
-  else if (writeEnable) programCounter <= writeAdd ? programCounter + $signed(dataIn) - 4 : dataIn;
-  else if (countEnable) programCounter <= programCounter + 4;
+if (reset) begin // active high reset
+  out <= 8'b0 ;
+end else if (up_down) begin
+  out <= out + 1;
+end else begin
+  out <= out - 1;
 end
 
-assign dataOut = programCounter;
-
-endmodule
+endmodule 
