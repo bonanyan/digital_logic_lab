@@ -64,12 +64,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#id8">方法2：</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#genus">第三步：在服务器上进行逻辑综合（我们用Genus）</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pre-post-syn">Pre-和Post-Syn仿真</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#pre-syn-post-syntestbench-v">具体的pre-syn &amp; post-syn的testbench.v对比为：</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id9">下面给一下为师我跑的带标记的波形图：</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#yosis">第三步：在服务器上进行逻辑综合（我们用开源的Yosis）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">评估其他设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-post-syn">Pre-和Post-Syn仿真</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id10">练习</a></li>
@@ -123,7 +120,7 @@
 <h4>方法1：<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
 <p>前提：连接校园网（因为我们的服务器在校园内局域网，如果你在校外需要开北大VPN）
 打开powershell或者terminal,直接输入</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.189
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的用户名<span class="o">]</span>@162.105.19.94
 </pre></div>
 </div>
 <p>然后输入你的密码即可，注意linux命令行中输入密码过程为了保密不显示出来，输完密码按回车就行。</p>
@@ -141,19 +138,19 @@
 <ul class="simple">
 <li><p>无论用powershell、terminal、Xshell还是putty，你的远程服务器上的账户为：</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>username:<span class="w"> </span>你的名字拼音+姓首字母，全小写，比如燕博南：bonany
-password:<span class="w"> </span>你的用户名+012（没有加号）
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>username:<span class="w"> </span>你的学号
+password:<span class="w"> </span>class2025
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>不管用哪种方法，成功完成远程连接后应该显示类似下图的界面，前面是你自己的账户名，后面“bn-cent”是我们的工作站的主机名：
-<img alt="loginTerminalScreenShot" src="_images/screenshot_1.png" />
+<li><p>不管用哪种方法，成功完成远程连接后应该显示类似下图的界面，前面是你自己的账户名，后面“bn-ws2”是我们的工作站的主机名：
+<img alt="loginTerminalScreenShot" src="_images/ss1.png" />
 如果成功了，现在你就可以在我们的服务器上通过网络ssh协议登录并且可以“为所欲为”了</p></li>
-<li><p>首次进去之后如果怕别人进你的账户，可以自行改密码（方法请自己百度/问LLM去）；我们的系统是CentOS 7.9的。</p></li>
+<li><p>首次进去之后如果怕别人进你的账户，可以自行改密码（方法请自己百度/问LLM去）；操作系统为Ubuntu。</p></li>
 <li><p>我们远程用服务器没有图形界面的，只用命令行。</p></li>
 <li><p>如果想用服务器上需要GUI的工具，比如gvim、gtkwave等，需要在ssh的时候加上-X或者-Y选项，并在自己的本地电脑上安装X11 Server(如<a class="reference external" href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>)，具体说明可见<a class="reference external" href="https://zhuanlan.zhihu.com/p/66075449">这里</a>：</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.189<span class="w"> </span>-Y
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.94<span class="w"> </span>-Y
 </pre></div>
 </div>
 </section>
@@ -166,74 +163,139 @@ password:<span class="w"> </span>你的用户名+012（没有加号）
 <li><p>打开powershell或者terminal,直接输入</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="o">[</span>你的RTL<span class="w"> </span>.v<span class="w"> </span>file所在的文件夹<span class="o">]</span>
-scp<span class="w"> </span><span class="o">[</span>你的design<span class="w"> </span>file.v<span class="o">]</span><span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.189:~/
+scp<span class="w"> </span><span class="o">[</span>你的design<span class="w"> </span>file.v<span class="o">]</span><span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.94:~/
 </pre></div>
 </div>
 <p>然后输个远程账户的密码就传过去了。</p>
 <p>说明：</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">scp</span></code>这句的意思就是把你的design file.v上传到IP地址是162.105.19.189的～（用户根目录）里去。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scp</span></code>这句的意思就是把你的design file.v上传到IP地址是162.105.19.94的～（用户根目录）里去。</p></li>
 </ul>
 </section>
 <section id="id8">
 <h4>方法2：<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>利用开源免费图形界面工具Windows上的<a class="reference external" href="https://winscp.net/eng/index.php">WinSCP</a>或MacOS上的小黄鸭<a class="reference external" href="https://cyberduck.io">CyberDuck</a>，主打一个拖拽操作十分简单</p></li>
-<li><p>具体使用方法请自行百度/问LLM，学习时间约3分钟以内。</p></li>
+<li><p>具体使用方法请自行百度/问LLM。</p></li>
 </ul>
 </section>
 </section>
-<section id="genus">
-<h3>第三步：在服务器上进行逻辑综合（我们用Genus）<a class="headerlink" href="#genus" title="Link to this heading"></a></h3>
+<section id="yosis">
+<h3>第三步：在服务器上进行逻辑综合（我们用开源的Yosis）<a class="headerlink" href="#yosis" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
-<li><p>为师我准备了示例文件夹：/home/opt/share/GenusSyn，先把它copy-paste到自己的根目录：</p></li>
+<li><p>准备了示例文件夹：/home/share/，先把它copy到自己的根目录：</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>/home/opt/share/GenusSyn<span class="w"> </span>~/
-<span class="nb">cd</span><span class="w"> </span>~/GenusSyn
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/work
+<span class="nb">cd</span><span class="w"> </span>~/work
+cp<span class="w"> </span>/data/share/yosys-sta.tar.gz<span class="w"> </span>.
+tar<span class="w"> </span>xvzf<span class="w"> </span>yosys-sta.tar.gz
+<span class="nb">cd</span><span class="w"> </span>yosys-sta
+
+<span class="c1">#配置一下yosis环境变量,只需要配置一次</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export PATH=</span><span class="nv">$PATH</span><span class="s2">:/data/share/oss-cad-suite/bin&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+bash
+make<span class="w"> </span>init<span class="w"> </span><span class="c1">#起始配置iEDA eda工具</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./bin/iEDA<span class="w"> </span>-v<span class="w">  </span><span class="c1"># 若运行成功, 终端将输出iEDA的版本号，如下图</span>
 </pre></div>
 </div>
+<p><img alt="loginTerminalScreenShot2" src="_images/ss2.png" /></p>
 <p>复制过来之后可以先用<code class="docutils literal notranslate"><span class="pre">ls</span></code>看一下目录：</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|-- makefile
-|-- src
-|   `-- program_counter.v
-`-- syn.tcl
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>yosys-sta
+├── bin
+│   └── iEDA
+├── example
+│   └── cnt.v
+├── iEDA
+├── Makefile
+├── pdk
+│   └── nangate45
+├── README.md
+└── scripts
+    ├── common.tcl
+    ├── default.sdc
+    ├── fix-fanout.json
+    ├── fix-fanout.tcl
+    ├── pdk
+    ├── sta.tcl
+    ├── yosys-area.tcl
+    └── yosys.tcl
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><p>然后直接输入</p></li>
+<li><p>然后开始进行综合：</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># make clean # if cleanup is needed</span>
+make<span class="w"> </span>sta
 </pre></div>
 </div>
 <p>稍等几分钟，因为这个例子代表已经验证过没有问题，所以应该可以跑出来：
-<img alt="genus run done" src="_images/screenshot_2.png" /></p>
-<p>现在以“&#64;genus:root&gt;”开头说明是在genus workspace下，输入<code class="docutils literal notranslate"><span class="pre">exit</span></code>退出到bash shell环境下，会发现多了几个文件：
-<img alt="genus run done2" src="_images/screenshot_3.png" /></p>
-<p>现在的GenusSyn folder包含以下内容:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>|-- fv
-|   `-- ProgramCounter
-|-- gen
-|   |-- ProgramCounter.sdc
-|   |-- ProgramCounter.sdf
-|   `-- ProgramCounter.vg
-|-- genus.cmd
-|-- genus.log
-|-- makefile
-|-- report
-|   |-- area.rep
-|   |-- cell.rep
-|   |-- power.rep
-|   `-- timing.rep
-|-- src
-|   `-- program_counter.v
-`-- syn.tcl
+<img alt="run done" src="_images/ss3.png" /></p>
+<p>现在的results/up_down_counter-500MHz包含以下内容:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>result/up_down_counter-500MHz
+├──<span class="w"> </span>fix-fanout.log
+├──<span class="w"> </span>sta.log
+├──<span class="w"> </span>synth_check_fixed.txt
+├──<span class="w"> </span>synth_check.txt
+├──<span class="w"> </span>synth_stat_fixed.txt
+├──<span class="w"> </span>synth_stat.txt
+├──<span class="w"> </span>up_down_counter.cap
+├──<span class="w"> </span>up_down_counter.fanout
+├──<span class="w"> </span>up_down_counter_hold.skew
+├──<span class="w"> </span>up_down_counter_instance.csv
+├──<span class="w"> </span>up_down_counter_instance.pwr
+├──<span class="w"> </span>up_down_counter.netlist.fixed.v
+├──<span class="w"> </span>up_down_counter.netlist.syn.v
+├──<span class="w"> </span>up_down_counter.pwr
+├──<span class="w"> </span>up_down_counter.rpt
+├──<span class="w"> </span>up_down_counter_setup.skew
+├──<span class="w"> </span>up_down_counter.trans
+├──<span class="w"> </span>up_down_counter.v
+├──<span class="w"> </span>yosys-fixed.log
+└──<span class="w"> </span>yosys.log
 </pre></div>
 </div>
-<p>其中GenusSyn/gen里面的东西是综合出来的结果，包括上述提到的：</p>
+<p>这些是逻辑综合出来的结果，包括上述提到的：</p>
+<p>运行后, 可在<code class="docutils literal notranslate"><span class="pre">result/gcd-500MHz/</span></code>目录下查看评估结果. 部分文件说明如下:</p>
 <ul class="simple">
-<li><p>ProgramCounter.vg: 生成的gate-level netlist</p></li>
-<li><p>ProgramCounter.sdf: 生成的gate-level netlist里的timing信息</p></li>
-<li><p>Programcounter.sdc: 我们加的constraints</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.netlist.syn.v</span></code> - Yosys综合的网表文件</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">synth_stat.txt</span></code> - Yosys综合的面积报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">synth_check.txt</span></code> - Yosys综合的检查报告, 用户需仔细阅读并决定是否需要排除相应警告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yosys.log</span></code> - Yosys综合的完整日志</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.netlist.fixed.v</span></code> - iNO优化扇出后的网表文件</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fix-fanout.log</span></code> - iNO优化扇出的日志</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">synth_stat_fixed.txt</span></code> - 优化扇出后Yosys综合的面积报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">synth_check_fixed.txt</span></code> - 优化扇出后Yosys综合的检查报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yosys-fixed.log</span></code> - 优化扇出后Yosys综合的完整日志</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.rpt</span></code> - iSTA的时序分析报告, 包含WNS, TNS和时序路径</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.cap</span></code> - iSTA的电容违例报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.fanout</span></code> - iSTA的扇出违例报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.trans</span></code> - iSTA的转换时间违例报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter_hold.skew</span></code> - iSTA的hold模式下时钟偏斜报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter_setup.skew</span></code> - iSTA的setup模式下时钟偏斜报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter.pwr</span></code> - iSTA的总体功耗报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter_instance.pwr</span></code> - iSTA的标准单元级别功耗报告</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up_down_counter_instance.csv</span></code> - iSTA的标准单元级别功耗报告, CSV格式</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sta.log</span></code> - iSTA的日志</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>评估其他设计<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<p>有两种操作方式：</p>
+<ol class="arabic">
+<li><p>命令行传参方式, 在命令行中指定其他设计的信息</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>-C<span class="w"> </span>/path/to/this_repo<span class="w"> </span>sta<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">DESIGN</span><span class="o">=</span>mydesign<span class="w"> </span><span class="nv">SDC_FILE</span><span class="o">=</span>/path/to/my.sdc<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">CLK_FREQ_MHZ</span><span class="o">=</span><span class="m">100</span><span class="w"> </span><span class="nv">CLK_PORT_NAME</span><span class="o">=</span>clk<span class="w"> </span><span class="nv">O</span><span class="o">=</span>/path/to/pwd<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">RTL_FILES</span><span class="o">=</span><span class="s2">&quot;/path/to/mydesign.v /path/to/xxx.v ...&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>修改变量方式, 在<code class="docutils literal notranslate"><span class="pre">Makefile</span></code>中修改上述变量(<code class="docutils literal notranslate"><span class="pre">DESIGN</span></code> <code class="docutils literal notranslate"><span class="pre">CLK_FREQ_MHZ</span></code> <code class="docutils literal notranslate"><span class="pre">CLK_PORT_NAME</span></code>), 然后运行<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">sta</span></code></p></li>
+</ol>
+<p>注意:</p>
+<ul class="simple">
+<li><p>在<code class="docutils literal notranslate"><span class="pre">RTL_FILES</span></code>的文件中必须包含一个名为<code class="docutils literal notranslate"><span class="pre">DESIGN</span></code>值的module</p></li>
+<li><p>sdc文件中的时钟端口名称需要与设计文件保持一致, 具体内容可参考样例设计GCD中的相应文件</p></li>
 </ul>
 </section>
 <section id="pre-post-syn">
@@ -241,166 +303,49 @@ scp<span class="w"> </span><span class="o">[</span>你的design<span class="w"> 
 <p>Pre-Syn仿真就是用testbench.v去include RTL design file（如本例中为program_counter.v）即可。</p>
 <p>而Post-Syn仿真也很简单，与pre-syn simulation唯“三”不同的地方就是：</p>
 <ol class="arabic">
-<li><p><code class="docutils literal notranslate"><span class="pre">`include</span> <span class="pre">ProgramCounter.vg</span></code>替代<code class="docutils literal notranslate"> <span class="pre">`include</span> <span class="pre">program_counter.v</span></code></p></li>
-<li><p>ProgramCounter.vg里引用了PDK的标准库的基础门电路单元，比如aoi (aoi是and-or-inverter的简称，表达式为c=~(a &amp; b | c))、and2等等，因此必须再include上pdk标准单元库的门电路行为模型，我们本次用的openpdk-15nm的Verilog行业模型在<code class="docutils literal notranslate"><span class="pre">/home/opt/pdk/nangate15nm/front_end/verilog/NanGate_15nm_OCL_conditional.v</span></code>，所以要在module外面加上：</p>
-<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`include</span><span class="w"> </span><span class="s">&quot;/home/opt/pdk/nangate15nm/front_end/verilog/NanGate_15nm_OCL_conditional.v&quot;</span>
+<li><p><code class="docutils literal notranslate"><span class="pre">`include</span> <span class="pre">&quot;up_down_counter.netlist.syn.v&quot;</span></code>替代<code class="docutils literal notranslate"> <span class="pre">`include</span> <span class="pre">cnt.v</span></code></p></li>
+<li><p>up_down_counter.netlist.syn.v里引用了PDK的标准库的基础门电路单元，比如aoi (aoi是and-or-inverter的简称，表达式为c=~(a &amp; b | c))、and2等等，因此必须再include上pdk标准单元库的门电路行为模型，我们本次用的Verilog模型在<code class="docutils literal notranslate"><span class="pre">/data/share/nangate45/sim/cells.v</span></code>，所以要在module外面加上：</p>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`include</span><span class="w"> </span><span class="s">&quot;/data/share/nangate45/sim/cells.v&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>在testbench.v里testbench module内部增加一块代码：</p></li>
 </ol>
-<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;ProgramCounter.sdf&quot;</span><span class="p">);</span>
+<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;path-to-sdf-file/design.sdf&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>当然注意要让运行的程序能找到.sdf file，比如可以加上它自己的路径：</p>
-<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;/home/bonany/GenusSyn/gen/ProgramCounter.sdf&quot;</span><span class="p">);</span>
+<p>不过本实验的开源工具没有生成相应的sdf时序文件，因此我们先<strong>忽略</strong>这一点。</p>
+<p>现在跑一下pre-syn仿真和post-syn仿真：</p>
+<ol class="arabic simple">
+<li><p>在yosys-sta下面建一个新的tb文件夹：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span><span class="o">[</span>path<span class="w"> </span>to<span class="w"> </span><span class="s2">&quot;yosys-sta&quot;</span><span class="o">]</span>/tb
 </pre></div>
 </div>
-<section id="pre-syn-post-syntestbench-v">
-<h4>具体的pre-syn &amp; post-syn的testbench.v对比为：<a class="headerlink" href="#pre-syn-post-syntestbench-v" title="Link to this heading"></a></h4>
-<p>Pre-syn testbench.v:</p>
-<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
-<span class="no">`include</span><span class="w"> </span><span class="s">&quot;program_counter.v&quot;</span>
-<span class="k">module</span><span class="w"> </span><span class="n">testbench</span><span class="p">;</span>
-<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">en</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="p">,</span><span class="w"> </span><span class="n">wae</span><span class="p">;</span>
-<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataIn</span><span class="p">;</span>
-<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataOut</span><span class="p">;</span>
+<ol class="arabic simple">
+<li><p>写两个新的<a class="reference download internal" download="" href="_downloads/613a8064d970f7c9f2f58f5c357c36d3/tb.v"><span class="xref download myst">tb.v</span></a>与<a class="reference download internal" download="" href="_downloads/ae20aea579db1b5147266221df97325c/tb-postsyn.v"><span class="xref download myst">tb-postsyn.v</span></a></p></li>
+<li><p>分别运行：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#pre-syn tb</span>
+iverilog<span class="w"> </span>tb.v<span class="w"> </span>-o<span class="w"> </span>presyn.out
+vvp<span class="w"> </span>presyn.out
 
-<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;wave.vcd&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">$dumpvars</span><span class="p">(</span><span class="mh">0</span><span class="p">);</span>
-<span class="k">end</span>
-
-<span class="n">ProgramCounter</span><span class="w"> </span><span class="n">u1</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">reset</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">dataIn</span><span class="p">(</span><span class="n">dataIn</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">dataOut</span><span class="p">(</span><span class="n">dataOut</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">writeEnable</span><span class="p">(</span><span class="n">we</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">writeAdd</span><span class="p">(</span><span class="n">wae</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">countEnable</span><span class="p">(</span><span class="n">en</span><span class="p">)</span>
-<span class="p">);</span>
-
-<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span>
-<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="o">=~</span><span class="n">clk</span><span class="p">;</span>
-
-<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d100</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
-<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
-<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d10</span><span class="p">;</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
-<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d200</span><span class="p">;</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">17</span><span class="p">)</span>
-<span class="w">    </span><span class="nb">$finish</span><span class="p">;</span>
-<span class="k">end</span>
-
-<span class="k">endmodule</span>
+<span class="c1">#post-syn tb</span>
+iverilog<span class="w"> </span>tb-postsyn.v<span class="w"> </span>-o<span class="w"> </span>postsyn.out
+vvp<span class="w"> </span>postsyn.out
 </pre></div>
 </div>
-<p>Post-syn testbench.v:</p>
-<div class="highlight-Verilog notranslate"><div class="highlight"><pre><span></span><span class="no">`timescale</span><span class="w"> </span><span class="mh">1</span><span class="n">ns</span><span class="o">/</span><span class="mh">1</span><span class="n">ns</span>
-<span class="c1">//-----------newly revised--------------</span>
-<span class="no">`include</span><span class="w"> </span><span class="s">&quot;ProgramCounter.vg&quot;</span>
-<span class="no">`include</span><span class="w"> </span><span class="s">&quot;/home/opt/pdk/nangate15nm/front_end/verilog/NanGate_15nm_OCL_conditional.v&quot;</span>
-<span class="c1">//-----------newly revised end----------</span>
-<span class="k">module</span><span class="w"> </span><span class="n">testbench</span><span class="p">;</span>
-<span class="kt">reg</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">en</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="p">,</span><span class="w"> </span><span class="n">wae</span><span class="p">;</span>
-<span class="kt">reg</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataIn</span><span class="p">;</span>
-<span class="kt">wire</span><span class="w"> </span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">dataOut</span><span class="p">;</span>
-
-<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;wave.vcd&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">$dumpvars</span><span class="p">(</span><span class="mh">0</span><span class="p">);</span>
-<span class="k">end</span>
-
-<span class="c1">//-----------newly revised--------------</span>
-<span class="k">initial</span><span class="w"> </span><span class="n">$sdf_annotate</span><span class="p">(</span><span class="s">&quot;/home/bonany/GenusSyn/gen/ProgramCounter.sdf&quot;</span><span class="p">);</span>
-<span class="c1">//-----------newly revised end----------</span>
-
-<span class="n">ProgramCounter</span><span class="w"> </span><span class="n">u1</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">reset</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">dataIn</span><span class="p">(</span><span class="n">dataIn</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">dataOut</span><span class="p">(</span><span class="n">dataOut</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">writeEnable</span><span class="p">(</span><span class="n">we</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">writeAdd</span><span class="p">(</span><span class="n">wae</span><span class="p">)</span>
-<span class="w">    </span><span class="p">,.</span><span class="n">countEnable</span><span class="p">(</span><span class="n">en</span><span class="p">)</span>
-<span class="p">);</span>
-
-<span class="k">initial</span><span class="w"> </span><span class="n">clk</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span>
-<span class="k">always</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">clk</span><span class="o">=~</span><span class="n">clk</span><span class="p">;</span>
-
-<span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d100</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
-<span class="w">    </span><span class="n">rst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
-<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d10</span><span class="p">;</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">5</span><span class="p">)</span>
-<span class="w">    </span><span class="n">dataIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="mi">&#39;d200</span><span class="p">;</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
-<span class="w">    </span><span class="p">#</span><span class="mh">2</span>
-<span class="w">    </span><span class="n">we</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-<span class="w">    </span><span class="n">wae</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
-
-<span class="w">    </span><span class="p">#(</span><span class="mh">2</span><span class="o">*</span><span class="mh">17</span><span class="p">)</span>
-<span class="w">    </span><span class="nb">$finish</span><span class="p">;</span>
-<span class="k">end</span>
-
-<span class="k">endmodule</span>
+<p>正常跑完应该长这样：
+<img alt="run done" src="_images/ss4.png" /></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>```{warning}
+在跑上面的程序时，一定要注意*路径*，问一下include的东西simulator是否能找到。
 </pre></div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>在跑上面的程序时，一定要注意路径，问一下include的东西simulator是否能找到。</p>
+<p>因为我们用的是一个开源标准库，所以功能并不完善，$sdf_annotate的东西被忽略，因此本实验仅作验证流程演示，post-syn仿真时可能延迟在波形中无法显示。</p>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>因为我们用的是一个开源标准库，所以功能并不完善，$sdf_annotate的东西可能会被忽略，因此本实验仅作验证流程演示，post-syn仿真时可能延迟在波形中无法显示。</p>
-</div>
-</section>
-<hr class="docutils" />
-<section id="id9">
-<h4>下面给一下为师我跑的带标记的波形图：<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
-<ul class="simple">
-<li><p>pre-syn simulation results:
-<img alt="pre-syn simulation waveform" src="_images/screenshot_4_1.png" /></p></li>
-<li><p>post-syn simulation results:
-<img alt="post-syn simulation waveform" src="_images/screenshot_5_1.png" /></p></li>
-</ul>
 <p>post-syn仿真验证功能通过:D</p>
-<hr class="docutils" />
-<p>注意：生成的PPA报告在GenusSyn/report里。</p>
-</section>
 </section>
 </section>
 <hr class="docutils" />
