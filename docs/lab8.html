@@ -171,15 +171,15 @@
 <section id="buffer">
 <h3>说明3, 关于片上Buffer:<a class="headerlink" href="#buffer" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>全世界只有一个1ns~2ns的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~2ns之间任意选择，精确到小数点后2位。</p></li>
-<li><p>SRAM memory读延迟&lt;1ns, SRAM可选择的参数 (IO bit width, 可以存多少个word，以及对应的面积和功耗)在<a class="reference download internal" download="" href="_downloads/3ddd32ffc95d69b9d6ba959d243fef44/SRAM_Specs.xlsx"><span class="xref download myst">SRAM_available_specs</span></a>里，如果想用更多地址、多大空间，请用提供的这些小模块自行组合</p></li>
+<li><p>全世界只有一个1ns~10s的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~10ns之间任意选择，精确到小数点后2位。</p></li>
+<li><p>SRAM memory读延迟&lt;1ns, SRAM可选择的参数 (IO bit width, 可以存多少个word，以及对应的面积和功耗)在<a class="reference download internal" download="" href="_downloads/53c708653d50689e1fcabeba1d6328db/SRAM_Specs_45nm.xlsx"><span class="xref download myst">SRAM_available_specs</span></a>里，如果想用更多地址、多大空间，请用提供的这些小模块自行组合</p></li>
 <li><p>功耗计算为：动态功耗(W/Hz)*工作频率(Hz)+静态功耗(W)</p></li>
 </ul>
 </section>
 <section id="id8">
 <h3>说明4, 芯片规模与精度：<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>虽然理论上可以做任意规模(如10000)的MAC乘加，但是注意TPUv4中每个unit也就16×16×16=4096个乘法器，华为昇腾单个计算核也不过16×8的维度，千万不要上来就做太多乘加器。</p></li>
+<li><p>虽然理论上可以做任意规模(如10000)的MAC乘加，但是注意TPUv4中每个unit也就16×16×16=4096个乘法器，华为昇腾单个计算核也不过16×8的维度，千万不要上来就做太多乘加器，否则太大了综合不出来。</p></li>
 <li><p>我们的输入有35%的稀疏度（35%的零），请考虑一下中间计算结果需要用BF16还是直接用long INT。</p></li>
 </ul>
 </section>
