@@ -120,7 +120,7 @@
 <h4>方法1：<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
 <p>前提：连接校园网（因为我们的服务器在校园内局域网，如果你在校外需要开北大VPN）
 打开powershell或者terminal,直接输入</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的用户名<span class="o">]</span>@162.105.19.94
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的用户名<span class="o">]</span>@162.105.19.59
 </pre></div>
 </div>
 <p>然后输入你的密码即可，注意linux命令行中输入密码过程为了保密不显示出来，输完密码按回车就行。</p>
@@ -150,7 +150,7 @@ password:<span class="w"> </span>class2025
 <li><p>我们远程用服务器没有图形界面的，只用命令行。</p></li>
 <li><p>如果想用服务器上需要GUI的工具，比如gvim、gtkwave等，需要在ssh的时候加上-X或者-Y选项，并在自己的本地电脑上安装X11 Server(如<a class="reference external" href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>)，具体说明可见<a class="reference external" href="https://zhuanlan.zhihu.com/p/66075449">这里</a>：</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.94<span class="w"> </span>-Y
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.59<span class="w"> </span>-Y
 </pre></div>
 </div>
 </section>
@@ -163,13 +163,13 @@ password:<span class="w"> </span>class2025
 <li><p>打开powershell或者terminal,直接输入</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="o">[</span>你的RTL<span class="w"> </span>.v<span class="w"> </span>file所在的文件夹<span class="o">]</span>
-scp<span class="w"> </span><span class="o">[</span>你的design<span class="w"> </span>file.v<span class="o">]</span><span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.94:~/
+scp<span class="w"> </span><span class="o">[</span>你的design<span class="w"> </span>file.v<span class="o">]</span><span class="w"> </span><span class="o">[</span>你的账户名<span class="o">]</span>@162.105.19.59:~/
 </pre></div>
 </div>
 <p>然后输个远程账户的密码就传过去了。</p>
 <p>说明：</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">scp</span></code>这句的意思就是把你的design file.v上传到IP地址是162.105.19.94的～（用户根目录）里去。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scp</span></code>这句的意思就是把你的design file.v上传到IP地址是162.105.19.59的～（用户根目录）里去。</p></li>
 </ul>
 </section>
 <section id="id8">

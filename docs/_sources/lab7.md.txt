@@ -18,7 +18,7 @@
 前提：连接校园网（因为我们的服务器在校园内局域网，如果你在校外需要开北大VPN）
 打开powershell或者terminal,直接输入
 ```bash
-ssh [你的用户名]@162.105.19.94
+ssh [你的用户名]@162.105.19.59
 ```
 
 然后输入你的密码即可，注意linux命令行中输入密码过程为了保密不显示出来，输完密码按回车就行。
@@ -42,7 +42,7 @@ password: class2025
 - 我们远程用服务器没有图形界面的，只用命令行。
 - 如果想用服务器上需要GUI的工具，比如gvim、gtkwave等，需要在ssh的时候加上-X或者-Y选项，并在自己的本地电脑上安装X11 Server(如[VcXsrv](https://sourceforge.net/projects/vcxsrv/))，具体说明可见[这里](https://zhuanlan.zhihu.com/p/66075449)：
 ```bash
-ssh [你的账户名]@162.105.19.94 -Y
+ssh [你的账户名]@162.105.19.59 -Y
 ```
 
 ### 第二步：把本地的RTL design file上传到服务器自己的账户里面去
@@ -50,12 +50,12 @@ ssh [你的账户名]@162.105.19.94 -Y
 - 打开powershell或者terminal,直接输入
 ```bash
 cd [你的RTL .v file所在的文件夹]
-scp [你的design file.v] [你的账户名]@162.105.19.94:~/
+scp [你的design file.v] [你的账户名]@162.105.19.59:~/
 ```
 然后输个远程账户的密码就传过去了。
 
 说明：
-- ```scp```这句的意思就是把你的design file.v上传到IP地址是162.105.19.94的～（用户根目录）里去。
+- ```scp```这句的意思就是把你的design file.v上传到IP地址是162.105.19.59的～（用户根目录）里去。
 
 #### 方法2：
 - 利用开源免费图形界面工具Windows上的[WinSCP](https://winscp.net/eng/index.php)或MacOS上的小黄鸭[CyberDuck](https://cyberduck.io)，主打一个拖拽操作十分简单
