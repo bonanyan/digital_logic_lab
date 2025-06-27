@@ -88,7 +88,7 @@ Y=XW矩阵乘法计算。
 ### 说明5, 最终加速器评分：
 - 计算功能正确占此部分的70%
 - 在计算功能正确的情况下，综合得分Score计算公式为：
-  - Score = exp(SSE/C0)×功率power(unit:mW)×面积area(unit:um^2)×(时间(us)^2)
+  - Score = exp(SSE/C0)×功率power(unit:mW)×(面积area(unit:um^2))^2×(时间(us))
   - 其中平方和误差Square-Sum Error (SSE) = ∑((计算结果每个element-正确无损计算结果每个element)^2)，其中C0=1E-3 (这个值是为了让BF16产生的1E-5的SSE影响整体分数在增加1%~5%左右，无损计算SSE=0时第一项应该为1)
   - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)
   - 逻辑综合后critical path setup time slack>0, 对应设置的主频
