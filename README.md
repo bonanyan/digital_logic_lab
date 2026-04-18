@@ -7,6 +7,12 @@ prerequisites:
 brew install sphinx-doc
 ```
 
+create venv:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
 - install sphinx-rtd-theme
 
 ```bash
@@ -19,10 +25,7 @@ pip install sphinx-rtd-theme
 pip install myst-parser
 ```
 
-activate venv:
-```bash
-source .venv/bin/activate
-```
+
 deactivate venv:
 ```bash
 deactivate
