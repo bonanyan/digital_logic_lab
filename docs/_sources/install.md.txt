@@ -23,3 +23,7 @@ Verilog HDL是一款起始于1989年左右的硬件描述语言，至今用于FP
 安装教程：[https://zhuanlan.zhihu.com/p/95081329](https://zhuanlan.zhihu.com/p/95081329)
 
 - 注意安装后如在cmd找不到，请将iverilog/bin文件件添加到环境变量中。
+
+## 3-CLAB 中可以用商用的Synopsys VCS：
+
+使用教程：【配置中，稍后添加】

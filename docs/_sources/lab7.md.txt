@@ -1,6 +1,6 @@
 # 实验7、初识逻辑综合
 
-## 【服务器IP】= 162.105.19.154
+## 【今年使用CLAB，具体操作待完善2026.4.18 
 
 ## 教程
 逻辑综合（logical synthesis）主要将Register-Transfer-Level (RTL)级的硬件描述语言代码转换为结构化表示。如下面的可综合的Verilog HDL写的可配置记数器在逻辑综合前（RTL）与逻辑综合后（gate-level netlist）的形式分别为【先看一眼logical syn大概是在干啥，后面我们一步一步跟着做一下】：
