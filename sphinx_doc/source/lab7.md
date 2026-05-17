@@ -8,8 +8,8 @@
 ```
 
 ![LogicSynDiagram](_static/assets/logicsyn.png)
-- 上图中Pre-syn RTL code【[program_counter.v](_static/assets/program_counter.v)】
-- 上图中Post-syn gate-level netlist（由Cadence Genus工具进行逻辑综合的）【[ProgramCounter.vg](_static/assets/ProgramCounter.vg)】
+- 上图中Pre-syn RTL code `program_counter.v`
+- 上图中Post-syn gate-level netlist（由Cadence Genus工具进行逻辑综合的）`ProgramCounter.vg`
 
 下面我们分三步完成上述逻辑综合工作：
 
