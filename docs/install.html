@@ -47,7 +47,17 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">实验0、实验准备</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fpga-xilinx-vivado">1-FPGA开发：Xilinx Vivado</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#asic-icarus-verilog-gtkwave">2-ASIC快速验证：Icarus Verilog+Gtkwave</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#clab-synopsys-vcs">3-CLAB 中可以用商用的Synopsys VCS：</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clab-synopsys-vcs">3-CLAB 中可以用商用的Synopsys VCS：</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#clab">第一大步：创建CLAB虚拟机</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">本地客户端准备</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">一、 登录与准备</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">创建课程主机</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">登录主机</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">连接远程桌面</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="lab1.html">实验1、组合逻辑</a></li>
@@ -113,7 +123,127 @@
 </section>
 <section id="clab-synopsys-vcs">
 <h2>3-CLAB 中可以用商用的Synopsys VCS：<a class="headerlink" href="#clab-synopsys-vcs" title="Link to this heading"></a></h2>
-<p>使用教程：【配置中，稍后添加】</p>
+<p>学校最近新开发了CLAB实验环境，具体分为：创建第一大步：虚拟主机-&gt;第二大步：通过shadowdesktop远程桌面使用vcs+wv进行verilog仿真（后续实验7还会用到dc_shell-t）</p>
+<section id="clab">
+<h3>第一大步：创建CLAB虚拟机<a class="headerlink" href="#clab" title="Link to this heading"></a></h3>
+<p>首先你需要在北大校园网内。</p>
+<section id="id2">
+<h4>本地客户端准备<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p>为了连接到云主机，我们需要一个终端和 SSH 客户端。在 Windows 系统中，我们推荐安装 <a class="reference external" href="https://aka.ms/terminal">Windows Terminal</a> （Windows11 应已自带）。在 macOS 和 Linux 系统中，我们推荐使用系统自带的终端。</p>
+<p>然后，我们需要一个 SSH 密钥对。如果你还没有 SSH 密钥对，可以通过以下方式生成。如果你之前用密钥登录过其他机器，或者电脑的个人目录中已经有<code class="docutils literal notranslate"><span class="pre">.ssh/id_rsa.pub</span></code>或者<code class="docutils literal notranslate"><span class="pre">.ssh/id_ed25519.pub</span></code>文件，可以直接复制现有的.pub 文件到平台，会较为方便。</p>
+<p>:::tip 小贴士
+我们这里说的用户目录，在 Windows 下指的是 <code class="docutils literal notranslate"><span class="pre">C:\Users\用户名</span></code>，macOS 和 Linux 中指的是<code class="docutils literal notranslate"><span class="pre">/home/用户名</span></code>
+:::</p>
+<p>下列操作将在 用户目录下<code class="docutils literal notranslate"><span class="pre">.ssh</span></code>文件夹下生成一个名为 <code class="docutils literal notranslate"><span class="pre">id_ed25519</span></code> 的密钥对。<code class="docutils literal notranslate"><span class="pre">id_ed25519.pub</span></code>文件中的内容后续会用到 。请注意，这是密钥的默认位置，你可能已经有一个同名密钥在同一位置了。如果是这样，请直接使用那个密钥，千万不要重新创建！如果重新创建，会有提示，询问是否覆盖。请不要覆盖！</p>
+<p>打开终端执行如下命令：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519
+</pre></div>
+</div>
+<p>如果报错为找不到<code class="docutils literal notranslate"><span class="pre">ssh-keygen</span></code>命令，说明你的 Windows 系统版本较老，推荐更新至近期的 Windows 版本或者下载学生免费版<a class="reference external" href="https://www.netsarang.com/en/free-for-home-school/">Xshell</a>使用。</p>
+</section>
+<section id="id3">
+<h4>一、 登录与准备<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p><strong>访问平台</strong>：在浏览器中打开北京大学 Clab 官方网站（<a class="reference external" href="https://clab.pku.edu.cn/">https://clab.pku.edu.cn/</a>）。</p></li>
+<li><p><strong>系统登录</strong>：点击首页的“登录使用”<strong>按钮，选择</strong>“校内统一登陆”完成身份认证并进入系统首页。</p></li>
+<li><p><strong>进入创建界面</strong>：在首页导航栏中点击“云主机”<strong>，随后点击</strong>“创建云主机”以进入配置向导。</p></li>
+</ol>
+</section>
+<section id="id4">
+<h4>创建课程主机<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<p><img alt="" src="_images/clab_ss_1.png" /></p>
+<p>在左边栏选中<code class="docutils literal notranslate"><span class="pre">计算-云主机</span></code>，进入云主机列表，点击<code class="docutils literal notranslate"><span class="pre">创建云主机</span></code></p>
+<section id="id5">
+<h5>第一页：基础配置<a class="headerlink" href="#id5" title="Link to this heading"></a></h5>
+<p><img alt="" src="_images/clab_ss_2.png" /></p>
+<p>请按以下参数依次完成云主机的基础运行环境设置：</p>
+<ul class="simple">
+<li><p><strong>架构</strong>：选择 <code class="docutils literal notranslate"><span class="pre">x86</span></code> 架构。</p></li>
+<li><p><strong>类别</strong>：选择 <code class="docutils literal notranslate"><span class="pre">elite_computing</span></code>。</p></li>
+<li><p><strong>名称列表</strong>：选择 <code class="docutils literal notranslate"><span class="pre">e-eda</span></code>（配置为 8核 8GB）。</p></li>
+<li><p><strong>启动源</strong>：选择“镜像”。</p></li>
+<li><p><strong>操作系统</strong>：选择 <code class="docutils literal notranslate"><span class="pre">CentOS</span></code>，并在具体版本中选中 <code class="docutils literal notranslate"><span class="pre">Almalinux</span> <span class="pre">8.10</span> <span class="pre">with</span> <span class="pre">GUI</span> <span class="pre">20250915</span></code> 镜像。</p></li>
+<li><p><strong>创建云硬盘</strong>：选择“是”，将其作为系统盘。</p></li>
+<li><p><strong>系统盘类型与容量</strong>：类型选择 <code class="docutils literal notranslate"><span class="pre">SSD</span></code>，容量设置为 <code class="docutils literal notranslate"><span class="pre">100GB</span></code>。</p></li>
+</ul>
+</section>
+<section id="id6">
+<h5>第二页：网络配置<a class="headerlink" href="#id6" title="Link to this heading"></a></h5>
+<p><img alt="" src="_images/clab_ss_3.png" /></p>
+<p>选择网络：首先勾选”共享网络“中的<code class="docutils literal notranslate"><span class="pre">pku-new</span></code>，然后勾选”当前项目网络“中的课程 EDA 课程网络，名称一般为<code class="docutils literal notranslate"><span class="pre">eda-</span></code>开头。 先点<code class="docutils literal notranslate"><span class="pre">pku-new</span></code>再点<code class="docutils literal notranslate"><span class="pre">eda-</span></code>的顺序不能颠倒，必须先勾选<code class="docutils literal notranslate"><span class="pre">pku-new</span></code>，再勾选课程网络。</p>
+</section>
+<section id="id7">
+<h5>第三页：系统配置<a class="headerlink" href="#id7" title="Link to this heading"></a></h5>
+<p><img alt="" src="_images/clab_ss_4.png" /></p>
+<ol class="arabic simple">
+<li><p>填写名称（可根据个人需求自定义命名），比如<code class="docutils literal notranslate"><span class="pre">dlogic</span></code></p></li>
+<li><p>选择密钥。如果之前没有添加过密钥，可以选择“创建密钥”，使用“导入密钥”选项，复制之前生成的<code class="docutils literal notranslate"><span class="pre">id_ed25519.pub</span></code>文件中的内容，粘贴到“公钥”一栏，名称随意。如果之前已经添加过密钥，可以直接选择已有的密钥。</p></li>
+</ol>
+<blockquote>
+<div><p><strong>附：本地Windows电脑生成与获取 SSH 公钥方法</strong></p>
+<p>a. 按下 <code class="docutils literal notranslate"><span class="pre">Win</span> <span class="pre">+</span> <span class="pre">R</span></code> 键，输入 <code class="docutils literal notranslate"><span class="pre">powershell</span></code> 并回车，打开命令行终端（<strong>Windows 系统</strong>）；按下 <code class="docutils literal notranslate"><span class="pre">Command</span> <span class="pre">(⌘)</span> <span class="pre">+</span> <span class="pre">空格</span></code> 键打开聚焦搜索（Spotlight），输入 <code class="docutils literal notranslate"><span class="pre">Terminal</span></code> 或 <code class="docutils literal notranslate"><span class="pre">终端</span></code> 并回车打开命令行终端。（<strong>macos系统</strong>）</p>
+<p>b. <strong>生成公钥</strong>：在终端中输入以下命令并执行。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ssh-keygen -t ed25519
+
+
+_注：执行后连续按回车键即可；若提示公钥已存在，选择覆盖即可。_
+</pre></div>
+</div>
+<p>c. <strong>获取公钥</strong>：在终端中输入以下命令查看公钥内容：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cat ~/.ssh/id_ed25519.pub
+</pre></div>
+</div>
+<p>d. 将终端输出完整密钥复制，粘贴至网页端的“导入 SSH 公钥”文本框中，并选中该公钥。</p>
+</div></blockquote>
+</section>
+<section id="id8">
+<h5>第四页：确认配置<a class="headerlink" href="#id8" title="Link to this heading"></a></h5>
+<ul class="simple">
+<li><p>仔细核对前三页的配置信息，确认无误后提交创建。</p></li>
+</ul>
+<p><img alt="" src="_images/clab_ss_4.png" /></p>
+<ul class="simple">
+<li><p>等待系统分配资源，云主机创建完成后，管理列表中将显示该主机的内网 IP 地址（<strong>以 <code class="docutils literal notranslate"><span class="pre">10.</span></code> 开头</strong>），请记录该地址。</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h4>登录主机<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>通过主机的 IP 地址登录主机，进行后续操作，用户名是<code class="docutils literal notranslate"><span class="pre">almalinux</span></code>。例如：</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>almalinux@10.xx.xx.xx
+</pre></div>
+</div>
+<p>这里<code class="docutils literal notranslate"><span class="pre">10.xx.xx.xx</span></code>应该是你自己的刚创建的虚拟主机IP地址。</p>
+<p>如果是MAC、Linux系统可直接在terminal里运行，如果是Windows系统可用系统自带的Powershell或者第三方ssh连接软件<a class="reference external" href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">Putty</a>等。</p>
+<ol class="arabic simple" start="2">
+<li><p><strong>执行 EDA 初始化</strong>：</p></li>
+</ol>
+<p>成功登录云主机终端后，执行以下命令配置EDA工具：</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>clabcli<span class="w"> </span>eda<span class="w"> </span>edadigital2026
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>获取桌面凭证</strong>：</p></li>
+</ol>
+<ul class="simple">
+<li><p>执行:</p></li>
+</ul>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>clabcli<span class="w"> </span>desktop
+</pre></div>
+</div>
+<p>（<strong>本命令不能加sudo</strong>）后，系统会提示输入您的<strong>学号</strong>。</p>
+<ul class="simple">
+<li><p>输入学号并回车后，终端将输出三项关键信息：<strong>远程桌面网址（URL）</strong>、<strong>生成的账号</strong>以及<strong>密码</strong>。（请务必妥善保存这些信息）。</p></li>
+</ul>
+</section>
+<section id="id10">
+<h4>连接远程桌面<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<p>以上步骤仅需完成一次，之后每次从远程桌面登录云主机即可。</p>
+<p>访问<a class="reference external" href="https://rdv2.lcpu.dev">https://rdv2.lcpu.dev</a>，使用刚才系统提供的账号密码登录，即可使用远程桌面。</p>
+</section>
+</section>
 </section>
 </section>
 
