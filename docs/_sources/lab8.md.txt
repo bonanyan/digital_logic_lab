@@ -78,7 +78,7 @@ Y=XW矩阵乘法计算。
 
 ### 说明3, 关于片上Buffer:
 - 全世界只有一个1ns~10s的时钟。注意，是仅能用一个时钟，但是它的频率可以在1ns~10ns之间任意选择，精确到小数点后2位。
-- SRAM memory读延迟<1ns, SRAM可选择的参数 (IO bit width, 可以存多少个word，以及对应的面积和功耗)在[SRAM_available_specs](_static/assets/SRAM_Specs_45nm.xlsx)里，如果想用更多地址、多大空间，请用提供的这些小模块自行组合
+- SRAM memory读延迟<1ns, SRAM可选择的参数 (IO bit width, 可以存多少个word，以及对应的面积和功耗)在[SRAM_available_specs](_static/assets/SRAM_Specs_15nm.xlsx)里，如果想用更多地址、多大空间，请用提供的这些小模块自行组合
 - 功耗计算为：动态功耗(W/Hz)*工作频率(Hz)+静态功耗(W)
 
 ### 说明4, 芯片规模与精度：
@@ -87,10 +87,11 @@ Y=XW矩阵乘法计算。
 
 ### 说明5, 最终加速器评分：
 - 计算功能正确占此部分的70%
-- 在计算功能正确的情况下，综合得分Score计算公式为：
-  - Score = exp(NMSE/C0)×功率power(unit:mW)×(面积area(unit:um^2))^2×(时间(us)) 【以去年为例，今年评分后面议定。】
-  - 其中相对均方误差 Normalized Mean-Squared Error（NMSE）=∑(((计算结果每个element-正确无损计算结果每个element)/正确无损计算结果每个element)^2)，其中C0=1E-3 (这个值是为了让BF16产生的1E-5的SSE影响整体分数在增加1%~5%左右，无损计算SSE=0时第一项应该为1)
-  - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (target freq-slack)
+- 在计算功能正确的前提下，分别对“精度“、“功耗“、端到端计算时间“进行打榜，每位同学的final project成绩的另外30%将是按榜单三项平均进行线性加权（如第一名满分，最后一名这30%计为0分）。
+- 提示：这样的打榜方式鼓励平均考虑精度、功耗（与面积正相关）、计算延迟。
+  - 精度计算为Sum Squared Error（SSE）=∑(((计算结果每个element-正确无损计算结果每个element)/正确无损计算结果每个element)^2)。如，BF16产生约为 1E-5的SSE数值。
+  - latency计算方法为从comp_enb的下降沿开始计算，到busyb的上升沿的绝对时间(单位：ns);也可以是cycle number×shortest clock period (我们简化为target clock period-slack)
+  - 功耗计算为综合后的逻辑部分（包括组合逻辑与DFF等时序逻辑二者的静态与动态功耗）+SRAM查[表](_static/assets/SRAM_Specs_15nm.xlsx)所得的静态+动态功耗。
   - 逻辑综合后critical path setup time slack>0, 对应设置的主频
   - 用到的DFF的PPA都在syn report里，用到的SRAM macro需要单独算
   - 综合的时候请剔除SRAM macro(将SRAM port拉到顶层, 待logic syn的design不应包含SRAM instances)，不然会很大
@@ -100,19 +101,18 @@ Y=XW矩阵乘法计算。
   - 竞赛大作业部分总分23分
   - 如功能未实现大作业部分为0分
   - 在实现功能后，此部分最低16.10分、最高23.00分，个人最终得分与排名或PPA综合得分绝对值有关
-- 截止日期2026年6月26日晚11:58:59，请打包提交至北大教学网Lab8：
-  - 设计报告(自己计算一下上面的得分)
+- 截止日期2026年6月30日(周二)晚11:58:59，请打包提交至北大教学网Lab8：
+  - 设计报告(自己计算一下上面的得分)，模板可用之前的实验报告模板。
   - 设计与测试代码
   - 综合用脚本syn.tcl
   - PPA原始报告 (top level)
 
 ```{note}
-**提示** 千万不要一下子写一大坨top RTL，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来
+**提示** 千万不要一下子写一大坨top RTL，一定要分层(hierarchical)一点一点写然后instantiate各个小block再拼起来,鼓励用AI Agent去进行RTL的Vibe coding，但是最好也是一点一点搭起来，大任务AI Agent也很难一下子全搞定。
 ```
 
+## 请善用本课程简介的优化方法
 
-## 本课程后面每节课，会简介优化方法
+时序收敛方法、脉动阵列架构、bit-serial乘法、稀疏计算优化、定制计算精度
 
-时序收敛方法、脉动阵列架构、bit-serial乘法、稀疏计算优化、定制计算精度……
-
-## 早点动手，多次尝试，把控时间，仔细推敲!
+## 早点动手，先打通流程、后优化设计，把控时间，仔细推敲!
